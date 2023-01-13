@@ -12,13 +12,8 @@ extern "C" {
 #include <windows.h>
 #endif
 
-namespace data {
-Json::Value cfg;
-std::map<std::string, sf::Texture> img_holder;
-
-void create_config() {
-    const char *s =
-        R"V0G0N({
+const char *default_conf_string = 
+R"V0G0N({
     "mode": 1,
     "resolution": {
         "letterboxing": false,
@@ -29,7 +24,7 @@ void create_config() {
     },
     "decoration": {
         "leftHanded": false,
-        "rgb": [255, 255, 255],
+        "backgroundColor": [255, 255, 255],
         "offsetX": [0, 11],
         "offsetY": [0, -65],
         "scalar": [1.0, 1.0]
@@ -37,8 +32,8 @@ void create_config() {
     "osu": {
         "mouse": true,
         "toggleSmoke": false,
-        "paw": [255, 255, 255],
-        "pawEdge": [0, 0, 0],
+        "pawColor": [255, 255, 255],
+        "pawEdgeColor": [0, 0, 0],
         "key1": [90],
         "key2": [88],
         "smoke": [67],
@@ -78,10 +73,16 @@ void create_config() {
         "pawEndingPoint": [258, 228]
     }
 })V0G0N";
+
+namespace data {
+Json::Value cfg;
+std::map<std::string, sf::Texture> img_holder;
+
+void create_config() {
     std::string error;
     Json::CharReaderBuilder cfg_builder;
     Json::CharReader *cfg_reader = cfg_builder.newCharReader();
-    cfg_reader->parse(s, s + strlen(s), &cfg, &error);
+    cfg_reader->parse(default_conf_string, default_conf_string + strlen(default_conf_string), &cfg, &error);
     delete cfg_reader;
 }
 
@@ -95,16 +96,16 @@ void error_msg(std::string error, std::string title) {
 
     SDL_MessageBoxColorScheme colorScheme = {
         { /* .colors (.r, .g, .b) */
-     /* [SDL_MESSAGEBOX_COLOR_BACKGROUND] */
-        { 255, 255,255 },
-        /* [SDL_MESSAGEBOX_COLOR_TEXT] */
-        { 0, 0, 0 },
-        /* [SDL_MESSAGEBOX_COLOR_BUTTON_BORDER] */
-        { 0, 0, 0 },
-        /* [SDL_MESSAGEBOX_COLOR_BUTTON_BACKGROUND] */
-        { 255,255, 255 },
-        /* [SDL_MESSAGEBOX_COLOR_BUTTON_SELECTED] */
-        { 128, 128, 128 }
+            /* [SDL_MESSAGEBOX_COLOR_BACKGROUND] */
+            { 255, 255, 255 },
+            /* [SDL_MESSAGEBOX_COLOR_TEXT] */
+            { 0, 0, 0 },
+            /* [SDL_MESSAGEBOX_COLOR_BUTTON_BORDER] */
+            { 0, 0, 0 },
+            /* [SDL_MESSAGEBOX_COLOR_BUTTON_BACKGROUND] */
+            { 255, 255, 255 },
+            /* [SDL_MESSAGEBOX_COLOR_BUTTON_SELECTED] */
+            { 128, 128, 128 }
         }
     };
 
@@ -183,19 +184,13 @@ bool init() {
     int mode = data::cfg["mode"].asInt();
 
     switch (mode) {
-    case 1:
-        return osu::init();
-    case 2:
-        return taiko::init();
-    case 3:
-        return ctb::init();
-    case 4:
-        return mania::init();
-    case 5:
-        return custom::init();
-    default:
-        error_msg("Mode value is not correct", "Error reading configs");
-        return false;
+        case 1: return osu::init();
+        case 2: return osuTaiko::init();
+        case 3: return osuCatch::init();
+        case 4: return osuMania::init();
+        case 5: return custom::init();
+        default: error_msg("Mode value is not correct", "Error reading configs");
+                 return false;
     }
 }
 

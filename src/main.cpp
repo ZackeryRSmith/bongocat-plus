@@ -12,13 +12,16 @@ int main(int argc, char ** argv) {
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 #endif
 
-    window.create(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Bongo Cat for osu!", sf::Style::Titlebar | sf::Style::Close);
-    window.setFramerateLimit(MAX_FRAMERATE);
-
     // loading configs
     while (!data::init()) {
         continue;
     }
+
+    Json::Value window_width = data::cfg["windowWidth"];
+    Json::Value window_height = data::cfg["windowHeight"];
+
+    window.create(sf::VideoMode(window_width.asInt(), window_height.asInt()), "Bongo Cat for osu!", sf::Style::Titlebar | sf::Style::Close);
+    window.setFramerateLimit(MAX_FRAMERATE);
 
     // initialize input
     if (!input::init()) {
@@ -59,30 +62,32 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
             }
         }
 
-        int mode = data::cfg["mode"].asInt();
+        // selected cat
+        int cat = data::cfg["cat"].asInt();
 
-        Json::Value rgb = data::cfg["decoration"]["rgb"];
-        int red_value = rgb[0].asInt();
-        int green_value = rgb[1].asInt();
-        int blue_value = rgb[2].asInt();
-        int alpha_value = rgb.size() == 3 ? 255 : rgb[3].asInt();
+        Json::Value background_color = data::cfg["decoration"]["backgroundColor"];
+        int red_value = background_color[0].asInt();
+        int green_value = background_color[1].asInt();
+        int blue_value = background_color[2].asInt();
+        int alpha_value = background_color.size() == 3 ? 255 : background_color[3].asInt();
+
+        // translation for artifacts when resize is applied
+        sf::Transform transform = sf::Transform();
+        transform.translate(0, window_height.asInt() - BASE_HEIGHT);
+        sf::RenderStates rstates = sf::RenderStates(transform);
 
         window.clear(sf::Color(red_value, green_value, blue_value, alpha_value));
-        switch (mode) {
-        case 1:
-            osu::draw();
-            break;
-        case 2:
-            taiko::draw();
-            break;
-        case 3:
-            ctb::draw();
-            break;
-        case 4:
-            mania::draw();
-            break;
-        case 5:
-            custom::draw();
+        switch (cat) {
+            case 1: osu::draw(rstates);
+                    break;
+            case 2: osuTaiko::draw(rstates);
+                    break;
+            case 3: osuCatch::draw(rstates);
+                    break;
+            case 4: osuMania::draw(rstates);
+                    break;
+            case 5: custom::draw(rstates);
+                    break;
         }
 
         if (is_show_input_debug) {

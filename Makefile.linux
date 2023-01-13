@@ -1,8 +1,9 @@
 CXX := g++
 SRCDIR := src
+CATSDIR := cats
 OBJDIR := obj
 ICODIR := ico
-SRC := $(wildcard $(SRCDIR)/*.cpp)
+SRC := $(wildcard $(SRCDIR)/*.cpp + $(shell find $(CATSDIR) -name "*.cpp"))
 OBJ := $(patsubst $(SRCDIR)/%.cpp, $(OBJDIR)/%.o, $(SRC))
 CXXFLAGS := -std=c++17 -O2
 LDFLAGS := -lxdo -lsfml-graphics -lsfml-window -lsfml-system -lSDL2 -lX11 -lXrandr

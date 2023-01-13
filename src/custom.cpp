@@ -172,7 +172,7 @@ bool init() {
     return true;
 }
 
-void draw() {
+void draw(const sf::RenderStates& rstates) {
     window.draw(bg);
 
     if (is_mouse) {
