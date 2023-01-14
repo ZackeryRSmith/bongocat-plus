@@ -14,9 +14,9 @@ project is still in development :)
     <br/>
     <a href="https://github.com/kuroni/bongocat-osu"><strong>Original Project</strong></a>
     <br/><br/>
-    <a href="https://github.com/ZackeryRSmith/junk/issues">Report Bug</a>
+    <a href="https://github.com/ZackeryRSmith/bongocat-osu/issues">Report Bug</a>
     ·
-    <a href="https://github.com/ZackeryRSmith/junk/issues">Request Feature</a>
+    <a href="https://github.com/ZackeryRSmith/bongocat-osu/issues">Request Feature</a>
   </p>
 </div>
 
