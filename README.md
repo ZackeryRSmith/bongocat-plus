@@ -22,7 +22,7 @@ project is still in development :)
 
 
 ## Description
-A Bongo Cat overlay with smooth paw movement and simple skinning ability, written in C++, for osu! *This project is an improved fork* as the original project has lost support from the developers. 83 unsolved issues and counting! This project aims to implement nearly all feature requests present in the original project. Along with fixing some bugs.
+A Bongo Cat overlay with smooth paw movement and simple skinning ability, written in C++, for osu! *This project is an improved fork* as the original project has lost support from the developers (80+ unsolved issues). This project aims to implement nearly all feature requests present in the original project. Along with fixing some bugs.
 
 ## Further information
 Press Ctrl + R to reload configuration and images (will only reload configurations when the window is focused).
