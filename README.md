@@ -1,26 +1,38 @@
-# Description
-An osu! Bongo Cat overlay with smooth paw movement and simple skinning ability, written in C++. Originally created by [HamishDuncanson](https://github.com/HamishDuncanson).
+<!-- TOP OF README ANCHOR -->
+<a name="top"></a>
+project is still in development :)
+<!-- PROJECT LOGO -->
+<br/>
+<div align="center">
+  <a href="https://github.com/ZackeryRSmith/bongocat-osu/">
+    <img src="./res/bongocatlogo.jpg" alt="logo" width="300" height="300">
+  </a>
 
-You can find how to configure the application in our [wiki](https://github.com/kuroni/bongocat-osu/wiki/Settings).
+<h3 align="center">Bongocat-Osu</h3>
+  <p align="center">
+    Click 'em circles in <i>style</i>!
+    <br/>
+    <a href="https://github.com/kuroni/bongocat-osu"><strong>Original Project</strong></a>
+    <br/><br/>
+    <a href="https://github.com/ZackeryRSmith/junk/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/ZackeryRSmith/junk/issues">Request Feature</a>
+  </p>
+</div>
 
-Download the program [here](https://github.com/kuroni/bongocat-osu/releases).
 
-Hugs and kisses to [CSaratakij](https://github.com/CSaratakij) for creating the Linux port for this project!
-
-Any suggestion and/or collaboration, especially that relating to sprites, is welcomed! Thank you!
-
-[Original post](https://www.reddit.com/r/osugame/comments/9hrkte/i_know_bongo_cat_is_getting_old_but_heres_a_nicer/) by [Kuvster](https://github.com/Kuvster).
+## Description
+A Bongo Cat overlay with smooth paw movement and simple skinning ability, written in C++, for osu! *This project is an improved fork* as the original project has lost support from the developers. 83 unsolved issues and counting! This project aims to implement nearly all feature requests present in the original project. Along with fixing some bugs.
 
 ## Further information
-In order to play with fullscreen on Windows 10, run both osu! and this application in Windows 7 compability mode.
-
 Press Ctrl + R to reload configuration and images (will only reload configurations when the window is focused).
 
 Supported operating system:
 * Windows
-* Linux (tested with Arch Linux with WINE Staging 5). Note: You **must** use WINE Staging, because for whatever reason on stable WINE bongocat-osu doesn't register keyboard input from other windows.
+* Linux
 
-_Notice_: If you're using WINE on Linux, make sure that osu! and this application run in the same `WINEPREFIX`.
+_Note_: If you're using WINE on Linux, make sure that osu! and this application run in the same `WINEPREFIX`.
+          Though I highly recommend you use Osu!Lazer if you are on linux.
 
 ## For developers
 This project uses [SFML](https://www.sfml-dev.org/index.php) and [JsonCpp](https://github.com/open-source-parsers/jsoncpp). JsonCpp libraries are directly included in the source using the provided `amalgamation.py` from the developers.
