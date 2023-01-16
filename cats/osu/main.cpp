@@ -5,6 +5,7 @@ namespace osu {
 Json::Value left_key_value, right_key_value, smoke_key_value, wave_key_value;
 int offset_x, offset_y;
 int x_paw_start, y_paw_start, x_paw_end, y_paw_end;
+int paw_arc1_width, paw_arc2_width;
 int paw_r, paw_g, paw_b, paw_a;
 int paw_edge_r, paw_edge_g, paw_edge_b, paw_edge_a;
 double scale;
@@ -13,7 +14,6 @@ sf::Sprite bg, up, left, right, device, smoke, wave;
 
 int key_state = 0;
 
-bool use_any_key = false;
 bool left_key_state = false;
 bool right_key_state = false;
 bool wave_key_state = false;
@@ -33,8 +33,6 @@ bool init() {
     is_mouse = osu["mouse"].asBool();
     is_enable_toggle_smoke = osu["toggleSmoke"].asBool();
 
-    use_any_key = osu["useAnyKey"].asBool();
-
     x_paw_start = osu["pawStartingPoint"][0].asInt();
     y_paw_start = osu["pawStartingPoint"][1].asInt();
     x_paw_end = osu["pawEndingPoint"][0].asInt();
@@ -45,46 +43,23 @@ bool init() {
     paw_b = osu["pawColor"][2].asInt();
     paw_a = osu["pawColor"].size() == 3 ? 255 : osu["pawColor"][3].asInt();
 
+    paw_arc1_width = osu["pawArc1Width"].asInt(); 
+    paw_arc2_width = osu["pawArc2Width"].asInt();
+
     paw_edge_r = osu["pawEdgeColor"][0].asInt();
     paw_edge_g = osu["pawEdgeColor"][1].asInt();
     paw_edge_b = osu["pawEdgeColor"][2].asInt();
     paw_edge_a = osu["pawEdgeColor"].size() == 3 ? 255 : osu["pawEdgeColor"][3].asInt();
 
-    bool chk[256];
-    std::fill(chk, chk + 256, false);
-
-    /* key1 & key2 */
-    if (!use_any_key) {
-        left_key_value = osu["key1"];
-        for (Json::Value &v : left_key_value) {
-            chk[v.asInt()] = true;
-        }
-
-        right_key_value = osu["key2"];
-        for (Json::Value &v : right_key_value) {
-            if (chk[v.asInt()]) {
-                data::error_msg("Overlapping osu! keybinds", "Error reading configs");
-                return false;
-            }
-        }
-    }
-
-    /* wave */
+    left_key_value = osu["key1"];
+    right_key_value = osu["key2"];
     wave_key_value = osu["wave"];
-    for (Json::Value &v : wave_key_value) {
-        if (chk[v.asInt()]) {
-            data::error_msg("Overlapping osu! keybinds", "Error reading configs");
-            return false;
-        }
-    }
-
-    /* smoke */
     smoke_key_value = osu["smoke"];
-    for (Json::Value &v : smoke_key_value) {
-        if (chk[v.asInt()]) {
-            data::error_msg("Overlapping osu! keybinds", "Error reading configs");
-            return false;
-        }
+    
+    // check for overlapping keybinds
+    if (helpers::keys_overlapping({left_key_value, right_key_value, wave_key_value, smoke_key_value})) {
+        data::error_msg("Overlapping osu! keybinds", "Error reading configs");
+        return false;
     }
 
     is_left_handed = data::cfg["decoration"]["leftHanded"].asBool();
@@ -121,13 +96,12 @@ bool init() {
 }
 
 void draw(const sf::RenderStates& rstates) {
-    window.draw(bg);
+    window.draw(bg, rstates);
 
     /* 
      * initializing pss and pss2 (kuvster's magic)
      */
     auto [x, y] = input::get_xy();
-    y += data::cfg["windowHeight"].asInt() - BASE_HEIGHT;
     int oof = 6;
     std::vector<double> pss = {(float) x_paw_start, (float) y_paw_start};
     double dist = hypot(x_paw_start - x, y_paw_start - y);
@@ -201,14 +175,8 @@ void draw(const sf::RenderStates& rstates) {
         window.draw(device, rstates);
     }
 
-    // draw smoke
-    bool is_smoke_key_pressed = false;
-    for (Json::Value &v : smoke_key_value) {
-        if (input::is_pressed(v.asInt())) {
-            is_smoke_key_pressed = true;
-            break;
-        }
-    }
+    // smoke
+    bool is_smoke_key_pressed = helpers::is_pressed(smoke_key_value);
 
     if (is_enable_toggle_smoke) {
         previous_smoke_key_state = current_smoke_key_state;
@@ -239,16 +207,16 @@ void draw(const sf::RenderStates& rstates) {
         fill[i].color = sf::Color(paw_r, paw_g, paw_b, paw_a);
         fill[i + 1].color = sf::Color(paw_r, paw_g, paw_b, paw_a);
     }
-    window.draw(fill);
+    window.draw(fill, rstates);
 
     // drawing first arm arc
     int shad = paw_edge_a / 3;
     sf::VertexArray edge(sf::TriangleStrip, 52);
-    double width = 7;
+    double width = paw_arc1_width;
     sf::CircleShape circ(width / 2);
     circ.setFillColor(sf::Color(paw_edge_r, paw_edge_g, paw_edge_b, shad));
     circ.setPosition(pss2[0] - width / 2, pss2[1] - width / 2);
-    window.draw(circ);
+    window.draw(circ, rstates);
     for (int i = 0; i < 50; i += 2) {
         double vec0 = pss2[i] - pss2[i + 2];
         double vec1 = pss2[i + 1] - pss2[i + 3];
@@ -266,18 +234,18 @@ void draw(const sf::RenderStates& rstates) {
     edge[50].position = sf::Vector2f(pss2[50] - vec1 / dist * width / 2, pss2[51] + vec0 / dist * width / 2);
     edge[50].color = sf::Color(paw_edge_r, paw_edge_g, paw_edge_b, shad);
     edge[51].color = sf::Color(paw_edge_r, paw_edge_g, paw_edge_b, shad);
-    window.draw(edge);
+    window.draw(edge, rstates);
     circ.setRadius(width / 2);
     circ.setPosition(pss2[50] - width / 2, pss2[51] - width / 2);
-    window.draw(circ);
+    window.draw(circ, rstates);
 
     // drawing second arm arc
     sf::VertexArray edge2(sf::TriangleStrip, 52);
-    width = 6;
+    width = paw_arc2_width;
     sf::CircleShape circ2(width / 2);
     circ2.setFillColor(sf::Color(paw_edge_r, paw_edge_g, paw_edge_b, paw_edge_a));
     circ2.setPosition(pss2[0] - width / 2, pss2[1] - width / 2);
-    window.draw(circ2);
+    window.draw(circ2, rstates);
     for (int i = 0; i < 50; i += 2) {
         vec0 = pss2[i] - pss2[i + 2];
         vec1 = pss2[i + 1] - pss2[i + 3];
@@ -295,62 +263,42 @@ void draw(const sf::RenderStates& rstates) {
     edge2[50].position = sf::Vector2f(pss2[50] - vec1 / dist * width / 2, pss2[51] + vec0 / dist * width / 2);
     edge2[50].color = sf::Color(paw_edge_r, paw_edge_g, paw_edge_b, paw_edge_a);
     edge2[51].color = sf::Color(paw_edge_r, paw_edge_g, paw_edge_b, paw_edge_a);
-    window.draw(edge2);
+    window.draw(edge2, rstates);
     circ2.setRadius(width / 2);
     circ2.setPosition(pss2[50] - width / 2, pss2[51] - width / 2);
-    window.draw(circ2);
+    window.draw(circ2, rstates);
 
 
     /*
      * capture key states
      */
-    if (!use_any_key) {
-        // left key
-        bool left_key = false;
-        for (Json::Value &v : left_key_value) {
-            if (input::is_pressed(v.asInt())) {
-                left_key = true;
-                break;
-            }
-        }
+    // left key
+    bool left_key = helpers::is_pressed(left_key_value);
 
-        if (left_key) {
-            if (!left_key_state) {
-                key_state = 1;
-                left_key_state = true;
-            }
-        } else {
-            left_key_state = false;
+    if (left_key) {
+        if (!left_key_state) {
+            key_state = 1;
+            left_key_state = true;
         }
+    } else {
+        left_key_state = false;
+    }
 
 
-        // right key
-        bool right_key = false;
-        for (Json::Value &v : right_key_value) {
-            if (input::is_pressed(v.asInt())) {
-                right_key = true;
-                break;
-            }
-        }
+    // right key
+    bool right_key = helpers::is_pressed(right_key_value);
 
-        if (right_key) {
-            if (!right_key_state) {
-                key_state = 2;
-                right_key_state = true;
-            }
-        } else {
-            right_key_state = false;
+    if (right_key) {
+        if (!right_key_state) {
+            key_state = 2;
+            right_key_state = true;
         }
+    } else {
+        right_key_state = false;
     }
 
     // wave key
-    bool wave_key = false;
-    for (Json::Value &v : wave_key_value) {
-        if (input::is_pressed(v.asInt())) {
-            wave_key = true;
-            break;
-        }
-    }
+    bool wave_key = helpers::is_pressed(wave_key_value);
 
     if (wave_key) {
         if (!wave_key_state) {

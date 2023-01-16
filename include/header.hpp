@@ -48,6 +48,11 @@ void drawDebugPanel();
 void cleanup();
 }; // namespace input
 
+namespace helpers {
+bool is_pressed(Json::Value key_value);
+bool keys_overlapping(std::vector<Json::Value> key_arrays);
+}
+
 namespace osu {
 bool init();
 
@@ -71,9 +76,3 @@ bool init();
 
 void draw(const sf::RenderStates &rstates);
 }; // namespace mania
-
-namespace custom {
-bool init();
-
-void draw(const sf::RenderStates &rstates);
-}; // namespace custom

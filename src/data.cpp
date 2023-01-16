@@ -14,64 +14,6 @@ extern "C" {
 
 const char *default_conf_string = 
 R"V0G0N({
-    "mode": 1,
-    "resolution": {
-        "letterboxing": false,
-        "width": 1920,
-        "height": 1080,
-        "horizontalPosition": 0,
-        "verticalPosition": 0
-    },
-    "decoration": {
-        "leftHanded": false,
-        "backgroundColor": [255, 255, 255],
-        "offsetX": [0, 11],
-        "offsetY": [0, -65],
-        "scalar": [1.0, 1.0]
-    },
-    "osu": {
-        "mouse": true,
-        "toggleSmoke": false,
-        "pawColor": [255, 255, 255],
-        "pawEdgeColor": [0, 0, 0],
-        "key1": [90],
-        "key2": [88],
-        "smoke": [67],
-        "wave": []
-    },
-    "taiko": {
-        "leftCentre": [88],
-        "rightCentre": [67],
-        "leftRim": [90],
-        "rightRim": [86]
-    },
-    "catch": {
-        "left": [37],
-        "right": [39],
-        "dash": [16]
-    },
-    "mania": {
-        "4K": true,
-        "key4K": [68, 70, 74, 75],
-        "key7K": [83, 68, 70, 32, 74, 75, 76]
-    },
-    "custom": {
-        "background": "img/osu/mousebg.png",
-        "mouse": false,
-        "mouseImage": "img/osu/mouse.png",
-        "mouseOnTop": true,
-        "offsetX": 0,
-        "offsetY": 0,
-        "scalar": 1.0,
-        "paw": [255, 255, 255],
-        "pawEdge": [0, 0, 0],
-        "keyContainers": []
-    },
-    "mousePaw": {
-        "mousePawComment": "coordinates start in the top left of the window",
-        "pawStartingPoint": [211, 159],
-        "pawEndingPoint": [258, 228]
-    }
 })V0G0N";
 
 namespace data {
@@ -181,14 +123,14 @@ bool init() {
 
     img_holder.clear();
 
-    int mode = data::cfg["mode"].asInt();
+    int cat = data::cfg["cat"].asInt();
 
-    switch (mode) {
+    switch (cat) {
         case 1: return osu::init();
         case 2: return osuTaiko::init();
         case 3: return osuCatch::init();
         case 4: return osuMania::init();
-        case 5: return custom::init();
+        //case 5: return custom::init();
         default: error_msg("Mode value is not correct", "Error reading configs");
                  return false;
     }

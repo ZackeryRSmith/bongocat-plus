@@ -13,18 +13,19 @@ bool init() {
 
     is_4K = mania["4K"].asBool();
 
+    // TODO: Clean this code
     for (int i = 0; i < 2; i++) {
-        left_key_value_4K[i] = mania["key4K"][i].asInt();
+        left_key_value_4K[i] = mania["key4k"].isInt() ? mania["key4k"].asInt() : (int)mania["key4K"][i].asString().at(0);
     }
     for (int i = 0; i < 2; i++) {
-        right_key_value_4K[i] = mania["key4K"][i + 2].asInt();
+        right_key_value_4K[i] = mania["key4K"][i + 2].isInt() ? mania["key4K"][i + 2].asInt() : (int)mania["key4K"][i + 2].asString().at(0);
     }
 
     for (int i = 0; i < 4; i++) {
-        left_key_value_7K[i] = mania["key7K"][i].asInt();
+        left_key_value_7K[i] = mania["key7K"][i].isInt() ? mania["key7K"][i].asInt() : (int)mania["key7K"][i].asString().at(0);
     }
     for (int i = 0; i < 4; i++) {
-        right_key_value_7K[i] = mania["key7K"][i + 3].asInt();
+        right_key_value_7K[i] = mania["key7K"][i + 3].isInt() ? mania["key7K"][i + 3].asInt() : (int)mania["key7K"][i + 3].asString().at(0);
     }
 
     /*
@@ -60,7 +61,7 @@ bool init() {
 }
 
 void draw_4K(const sf::RenderStates& rstates) {
-    window.draw(bg);
+    window.draw(bg, rstates);
 
     int left_cnt = 0, right_cnt = 0;
     int left_sum = 0, right_sum = 0;
@@ -108,7 +109,7 @@ void draw_4K(const sf::RenderStates& rstates) {
 }
 
 void draw_7K(const sf::RenderStates& rstates) {
-    window.draw(bg);
+    window.draw(bg, rstates);
 
     int left_cnt = 0, right_cnt = 0;
     int left_sum = 0, right_sum = 0;

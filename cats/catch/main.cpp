@@ -14,20 +14,15 @@ bool init() {
     // getting configs
     Json::Value osuCatch = data::cfg["cats"]["catch"];
 
-    bool chk[256];
-    std::fill(chk, chk + 256, false);
     left_key_value = osuCatch["left"];
-    for (Json::Value &v : left_key_value) {
-        chk[v.asInt()] = true;
-    }
     right_key_value = osuCatch["right"];
-    for (Json::Value &v : right_key_value) {
-        if (chk[v.asInt()]) {
-            data::error_msg("Overlapping osu!catch keybinds", "Error reading configs");
-            return false;
-        }
-    }
     dash_key_value = osuCatch["dash"];
+    
+    // check for overlapping keybinds
+    if (helpers::keys_overlapping({left_key_value, right_key_value, dash_key_value})) {
+        data::error_msg("Overlapping osu! keybinds", "Error reading configs");
+        return false;
+    }
 
     /*
      * importing sprites
@@ -44,16 +39,11 @@ bool init() {
 }
 
 void draw(const sf::RenderStates& rstates) {
-    window.draw(bg);
+    window.draw(bg, rstates);
     
-    // drawing left-right keypresses
-    bool left_key = false;
-    for (Json::Value &v : left_key_value) {
-        if (input::is_pressed(v.asInt())) {
-            left_key = true;
-            break;
-        }
-    }
+    // left key
+    bool left_key = helpers::is_pressed(left_key_value);
+    
     if (left_key) {
         if (!left_key_state) {
             key_state = 1;
@@ -63,13 +53,9 @@ void draw(const sf::RenderStates& rstates) {
         left_key_state = false;
     }
 
-    bool right_key = false;
-    for (Json::Value &v : right_key_value) {
-        if (input::is_pressed(v.asInt())) {
-            right_key = true;
-            break;
-        }
-    }
+    // right key
+    bool right_key = helpers::is_pressed(right_key_value);    
+
     if (right_key) {
         if (!right_key_state) {
             key_state = 2;
@@ -79,6 +65,14 @@ void draw(const sf::RenderStates& rstates) {
         right_key_state = false;
     }
 
+    // dash
+    bool is_dash = helpers::is_pressed(dash_key_value);
+    window.draw(is_dash ? dash : up, rstates);
+
+
+    /*
+     * drawing mid points
+     */
     if (!left_key_state && !right_key_state) {
         key_state = 0;
         window.draw(mid, rstates);
@@ -97,18 +91,6 @@ void draw(const sf::RenderStates& rstates) {
         } else {
             window.draw(mid, rstates);
         }
-    }
-
-    bool is_dash = false;
-    for (Json::Value &v : dash_key_value) {
-        if (input::is_pressed(v.asInt())) {
-            window.draw(dash, rstates);
-            is_dash = true;
-            break;
-        }
-    }
-    if (!is_dash) {
-        window.draw(up, rstates);
     }
 }
 }; // namespace osuCatch

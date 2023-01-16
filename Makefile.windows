@@ -1,7 +1,8 @@
 SRCDIR := src
+CATSDIR := cats
 OBJDIR := obj
 ICODIR := ico
-SRC := $(wildcard $(SRCDIR)/*.cpp)
+SRC := $(wildcard $(SRCDIR)/*.cpp + $(shell FORFILES /P $(CATSDIR) /S /M *.cpp /C "CMD /C ECHO @relpath"))
 OBJ := $(patsubst $(SRCDIR)/%.cpp, $(OBJDIR)/%.o, $(SRC))
 ICO := $(ICODIR)/ico.res
 CXXFLAGS := -std=c++17 -s -O2 -mwindows

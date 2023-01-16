@@ -1,44 +1,27 @@
 #include "header.hpp"
 
 namespace osuTaiko {
-Json::Value rim_key_value[2], centre_key_value[2];
-sf::Sprite bg, up[2], rim[2], centre[2];
+Json::Value rim_key_value[2], center_key_value[2];
+sf::Sprite bg, up[2], rim[2], center[2];
 
 int key_state[2] = {0, 0};
 bool rim_key_state[2] = {false, false};
-bool centre_key_state[2] = {false, false};
+bool center_key_state[2] = {false, false};
 double timer_rim_key[2] = {-1, -1};
-double timer_centre_key[2] = {-1, -1};
+double timer_center_key[2] = {-1, -1};
 
 bool init() {
     // getting configs
-    bool chk[256];
-    std::fill(chk, chk + 256, false);
     Json::Value taiko = data::cfg["cats"]["taiko"];
 
     rim_key_value[0] = taiko["leftRim"];
-    for (Json::Value &v : rim_key_value[0]) {
-        chk[v.asInt()] = true;
-    }
-    centre_key_value[0] = taiko["leftCentre"];
-    for (Json::Value &v : centre_key_value[0]) {
-        if (chk[v.asInt()]) {
-            data::error_msg("Overlapping osu!taiko keybinds", "Error reading configs");
-            return false;
-        }
-    }
-
-    std::fill(chk, chk + 256, false);
+    center_key_value[0] = taiko["leftCenter"];
     rim_key_value[1] = taiko["rightRim"];
-    for (Json::Value &v : rim_key_value[1]) {
-        chk[v.asInt()] = true;
-    }
-    centre_key_value[1] = taiko["rightCentre"];
-    for (Json::Value &v : centre_key_value[1]) {
-        if (chk[v.asInt()]) {
-            data::error_msg("Overlapping osu!taiko keybinds", "Error reading configs");
-            return false;
-        }
+    center_key_value[1] = taiko["rightCenter"];
+
+    // check for overlapping keybinds
+    if (helpers::keys_overlapping({rim_key_value[0], center_key_value[0], rim_key_value[1], center_key_value[1]})) {
+        return false;
     }
 
     /*
@@ -48,26 +31,22 @@ bool init() {
     bg.setTexture(data::load_texture("cats/taiko/img/bg.png"));
     up[0].setTexture(data::load_texture("cats/taiko/img/leftup.png"));
     rim[0].setTexture(data::load_texture("cats/taiko/img/leftrim.png"));
-    centre[0].setTexture(data::load_texture("cats/taiko/img/leftcentre.png"));
+    center[0].setTexture(data::load_texture("cats/taiko/img/leftcenter.png"));
     up[1].setTexture(data::load_texture("cats/taiko/img/rightup.png"));
     rim[1].setTexture(data::load_texture("cats/taiko/img/rightrim.png"));
-    centre[1].setTexture(data::load_texture("cats/taiko/img/rightcentre.png"));
+    center[1].setTexture(data::load_texture("cats/taiko/img/rightcenter.png"));
 
     return true;
 }
 
 void draw(const sf::RenderStates& rstates) {
-    window.draw(bg);
+    window.draw(bg, rstates);
 
     // 0 for left side, 1 for right side
     for (int i = 0; i < 2; i++) {
-        bool rim_key = false;
-        for (Json::Value &v : rim_key_value[i]) {
-            if (input::is_pressed(v.asInt())) {
-                rim_key = true;
-                break;
-            }
-        }
+        // rim
+        bool rim_key = helpers::is_pressed(rim_key_value[i]);
+        
         if (rim_key) {
             if (!rim_key_state[i]) {
                 key_state[i] = 1;
@@ -77,28 +56,28 @@ void draw(const sf::RenderStates& rstates) {
             rim_key_state[i] = false;
         }
 
-        bool centre_key = false;
-        for (Json::Value &v : centre_key_value[i]) {
-            if (input::is_pressed(v.asInt())) {
-                centre_key = true;
-                break;
-            }
-        }
-        if (centre_key) {
-            if (!centre_key_state[i]) {
+        // center
+        bool center_key = helpers::is_pressed(center_key_value[i]);
+        
+        if (center_key) {
+            if (!center_key_state[i]) {
                 key_state[i] = 2;
-                centre_key_state[i] = true;
+                center_key_state[i] = true;
             }
         } else {
-            centre_key_state[i] = false;
+            center_key_state[i] = false;
         }
 
-        if (!rim_key_state[i] && !centre_key_state[i]) {
+
+        /*
+         * drawing key states & other sprites
+         */
+        if (!rim_key_state[i] && !center_key_state[i]) {
             key_state[i] = 0;
             window.draw(up[i], rstates);
         }
         if (key_state[i] == 1) {
-            if ((clock() - timer_centre_key[i]) / CLOCKS_PER_SEC > BONGO_KEYPRESS_THRESHOLD) {
+            if ((clock() - timer_center_key[i]) / CLOCKS_PER_SEC > BONGO_KEYPRESS_THRESHOLD) {
                 window.draw(rim[i], rstates);
                 timer_rim_key[i] = clock();
             } else {
@@ -106,8 +85,8 @@ void draw(const sf::RenderStates& rstates) {
             }
         } else if (key_state[i] == 2) {
             if ((clock() - timer_rim_key[i]) / CLOCKS_PER_SEC > BONGO_KEYPRESS_THRESHOLD) {
-                window.draw(centre[i], rstates);
-                timer_centre_key[i] = clock();
+                window.draw(center[i], rstates);
+                timer_center_key[i] = clock();
             } else {
                 window.draw(up[i], rstates);
             }
