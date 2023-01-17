@@ -15,9 +15,9 @@ project is still in development :)
     <br/>
     <a href="https://github.com/kuroni/bongocat-osu"><strong>Original Project</strong></a>
     <br/><br/>
-    <a href="https://github.com/ZackeryRSmith/bongocat-osu/issues">Report Bug</a>
+    <a href="https://github.com/ZackeryRSmith/bongocat-plus/issues">Report Bug</a>
     ·
-    <a href="https://github.com/ZackeryRSmith/bongocat-osu/issues">Request Feature</a>
+    <a href="https://github.com/ZackeryRSmith/bongocat-plus/issues">Request Feature</a>
   </p>
 </div>
 
@@ -35,6 +35,11 @@ project is still in development :)
     </li>-->
     <li><a href="#additional-information">Additional Information</a></li>
     <li><a href="#contributing">Contributing</a></li>
+    <ul>
+      <li><a href="#windows-and-mingw">Windows and MinGW</a></li>
+      <li><a href="#linux">Linux</a></li>
+      <li><a href="#building-and-testing">Building and Testing</a></li>
+    </ul>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
 </details>
@@ -69,7 +74,7 @@ You need to have these dependencies installed. Check with your package manager f
 
 Then, copy `Makefile.linux` to `Makefile`.
 
-### Building and testing
+### Building and Testing
 To build, run this command from the base directory:
 
 ```sh
