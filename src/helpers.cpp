@@ -7,9 +7,10 @@
 
 #include "header.hpp"
 #include <vector>
+#include <tuple>
 namespace helpers {
 
-// Wrapper function for input::is_pressed
+// wrapper function for input::is_pressed
 //   * Automaticly converts ASCII chars to ASCII codes
 bool is_pressed(Json::Value key_value) {
     for (Json::Value &v : key_value) {
@@ -20,7 +21,7 @@ bool is_pressed(Json::Value key_value) {
     return false;
 }
 
-// Code cleaner. Makes checking for overlapping keys a breeze
+// code cleaner. Makes checking for overlapping keys a breeze
 //   * Automaticly converts ASCII chars to ASCII codes
 bool keys_overlapping(std::vector<Json::Value> key_arrays) {
     bool chk[256]{}; // check buffer, used to keep track of keys
@@ -36,5 +37,14 @@ bool keys_overlapping(std::vector<Json::Value> key_arrays) {
     }
 
     return false;
+}
+
+// returns default size values defined in header.hpp if
+// "windowWidth" or "windowHeight" aren't defined in the cats config
+std::vector<int> get_window_size(Json::Value cat_config) {
+    int window_width = cat_config["windowWidth"].isNull() ? BASE_WIDTH : cat_config["windowWidth"].asInt();
+    int window_height = cat_config["windowHeight"].isNull() ? BASE_HEIGHT : cat_config["windowHeight"].asInt();
+
+    return {window_width, window_height};
 }
 };

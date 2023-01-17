@@ -1,11 +1,10 @@
 *.res
 *.exe
 *.o
-obj
 .cache
 Makefile
 bongo
-bin/*
+build
 NOTE
 config.json
 compile_commands.json

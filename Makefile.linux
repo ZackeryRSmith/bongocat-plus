@@ -1,32 +1,51 @@
-CXX := g++
-SRCDIR := src
-CATSDIR := cats
-OBJDIR := obj
-RESDIR := res
-SRC := $(wildcard $(SRCDIR)/*.cpp + $(shell find $(CATSDIR) -name "*.cpp"))
-OBJ := $(patsubst $(SRCDIR)/%.cpp, $(OBJDIR)/%.o, $(SRC))
+CXX      := g++
 CXXFLAGS := -std=c++17 -O2
-LDFLAGS := -lxdo -lsfml-graphics -lsfml-window -lsfml-system -lSDL2 -lX11 -lXrandr
-INCFLAGS := -Iinclude
+LDFLAGS  := -lxdo -lsfml-graphics -lsfml-window -lsfml-system -lSDL2 -lX11 -lXrandr
+BUILD    := ./build
+OBJDIR   := $(BUILD)/objects
+APPDIR   := $(BUILD)/bin
+TARGET   := bongocat
+INCLUDE  := -Iinclude/
+SRC      :=                      \
+	$(wildcard src/custom/*.cpp) \
+	$(wildcard src/*.cpp)        \
 
-.PHONY: test create clean
+OBJECTS      := $(SRC:%.cpp=$(OBJDIR)/%.o)
+DEPENDENCIES := $(OBJECTS:.o=.d)
 
-all: create bin/bongo
+all: build $(APPDIR)/$(TARGET)
 
-bin/bongo: $(OBJ)
-	$(CXX) -o $@ $^ $(INCFLAGS) $(CXXFLAGS) $(LDFLAGS)
+$(OBJDIR)/%.o: %.cpp
+	@mkdir -p $(@D)
+	$(CXX) $(CXXFLAGS) $(INCLUDE) -c $< -MMD -o $@
 
-$(OBJDIR)/%.o: $(SRCDIR)/%.cpp
-	$(CXX) -c -o $@ $^ $(INCFLAGS) $(CXXFLAGS) $(LDFLAGS)
 
-create:
-	mkdir -p $(OBJDIR)
-	mkdir -p bin
+$(APPDIR)/$(TARGET): $(OBJECTS)
+	@mkdir -p $(@D)
+	$(CXX) $(CXXFLAGS) -o $(APPDIR)/$(TARGET) $^ $(LDFLAGS)
 
-test:
-	bin/bongo
+-include $(DEPENDENCIES)
+
+.PHONY: all build clean debug release info
+
+build:
+	@mkdir -p $(APPDIR)
+	@mkdir -p $(OBJDIR)
+
+debug: CXXFLAGS += -DDEBUG -g
+debug: all
+
+release: CXXFLAGS += -O2
+release: all
 
 clean:
-	cd obj
-	rm -f *.o
+	-@rm -rvf $(OBJDIR)/*
+	-@rm -rvf $(APPDIR)/*
 
+info:
+	# TODO: Add color
+	@echo -ne "[*] Application dir: ${APPDIR}     "
+	@echo -ne "[*] Object dir:      ${OBJDIR}     "
+	@echo -ne "[*] Sources:         ${SRC}         "
+	@echo -ne "[*] Objects:         ${OBJECTS}     "
+	@echo -ne "[*] Dependencies:    ${DEPENDENCIES}"

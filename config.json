@@ -1,5 +1,5 @@
 {
-    "cat": 2,
+    "cat": 4,
     "cats": {
         "osu": {
             "mouse": true,
@@ -34,6 +34,22 @@
             "4K": false,
             "key4K": ["D", "F", "J", "K"],
             "key7K": ["S", "D", "F", " ", "J", "K", "L"]
+        },
+
+        "fnf": {
+            "mouse": true,
+            "toggleSmoke": true,
+            "pawColor": [255, 255, 255],
+            "pawEdgeColor": [0, 0, 0],
+            "key1": ["Z"],
+            "key2": ["X"],
+            "smoke": ["C"],
+            "wave": ["W"],
+
+            "pawArc1Width": 7,
+            "pawArc2Width": 6,
+            "pawStartingPoint": [211, 159],
+            "pawEndingPoint": [258, 228]
         }
     },
 
@@ -49,10 +65,7 @@
         "leftHanded": false,
         "backgroundColor": [224, 22, 66],
         "offsetX": [0, 11],
-        "offsetY": [0, -65],
+        "offsetY": [0, -20],
         "scalar": [1.0, 1.0]
-    },
-
-    "windowWidth": 612,
-    "windowHeight": 352   
+    }
 }

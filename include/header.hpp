@@ -11,6 +11,9 @@
 #include <sstream>
 #include <map>
 
+#include <stdexcept>
+#include <memory>
+
 #include <time.h>
 
 #include <math.h>
@@ -21,12 +24,19 @@
 
 extern sf::RenderWindow window;
 
+class Cat {
+public:
+    int window_width{}, window_height{};
+
+    virtual void draw(const sf::RenderStates& rstates) = 0;
+};
+
 namespace data {
 extern Json::Value cfg;
 
 void error_msg(std::string error, std::string title);
 
-bool init();
+std::shared_ptr<Cat> init();
 
 sf::Texture &load_texture(std::string path);
 }; // namespace data
@@ -51,9 +61,11 @@ void cleanup();
 namespace helpers {
 bool is_pressed(Json::Value key_value);
 bool keys_overlapping(std::vector<Json::Value> key_arrays);
+
+std::vector<int> get_window_size(Json::Value cat_config);
 }
 
-namespace osu {
+/*namespace osu {
 bool init();
 
 void draw(const sf::RenderStates &rstates);
@@ -75,4 +87,4 @@ namespace osuMania {
 bool init();
 
 void draw(const sf::RenderStates &rstates);
-}; // namespace mania
+}; // namespace mania*/

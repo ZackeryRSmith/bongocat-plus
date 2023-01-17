@@ -1,9 +1,11 @@
 #include "header.hpp"
 #include <iostream>
+#include <memory>
 
 #if !defined(__unix__) && !defined(__unix)
     #include <windows.h>
 #endif
+
 
 sf::RenderWindow window;
 
@@ -14,14 +16,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 #endif
 
     // loading configs
-    while (!data::init()) {
-        continue;
-    }
+    std::shared_ptr<Cat> cat = data::init();
 
-    int window_width = data::cfg["windowWidth"].asInt();
-    int window_height = data::cfg["windowHeight"].asInt();
-
-    window.create(sf::VideoMode(window_width, window_height), "Bongo Cat for osu!", sf::Style::Titlebar | sf::Style::Close);
+    window.create(sf::VideoMode(cat->window_width, cat->window_height), "Bongo Cat for osu!", sf::Style::Titlebar | sf::Style::Close);
     window.setFramerateLimit(MAX_FRAMERATE);
 
     // initialize input
@@ -65,7 +62,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
         // translation for artifacts when resize is applied
         sf::Transform transform = sf::Transform();
-        transform.translate(0, window_height - BASE_HEIGHT);
+        transform.translate(0, cat->window_height - BASE_HEIGHT);
         sf::RenderStates rstates = sf::RenderStates(transform);
         
         Json::Value background_color = data::cfg["decoration"]["backgroundColor"];
@@ -76,22 +73,19 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
         int alpha_value = background_color.size() == 3 ? 255 : background_color[3].asInt();
         
         window.clear(sf::Color(red_value, green_value, blue_value, alpha_value));
-        
-        // selected cat
-        int cat = data::cfg["cat"].asInt();
-        
-        switch (cat) {
-            case 1: osu::draw(rstates);
-                    break;
-            case 2: osuTaiko::draw(rstates);
-                    break;
-            case 3: osuCatch::draw(rstates);
-                    break;
-            case 4: osuMania::draw(rstates);
-                    break;
+    
+        cat->draw(rstates);
+
+        //switch (cat) {
+            //case 2: osuTaiko::draw(rstates);
+            //        break;
+            //case 3: osuCatch::draw(rstates);
+            //        break;
+            //case 4: osuMania::draw(rstates);
+            //        break;
             //case 5: custom::draw(rstates);
             //        break;
-        }
+        //}
 
         if (is_show_input_debug) {
             input::drawDebugPanel();
