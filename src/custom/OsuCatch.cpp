@@ -13,11 +13,14 @@ class OsuCatch : public Cat {
 
     OsuCatch() {
         // getting configs
-        Json::Value osuCatch = data::cfg["cats"]["catch"];
+        Json::Value cfg = data::cfg["cats"]["catch"];
+        
+        window_width = helpers::get_window_size(cfg)[0];
+        window_height = helpers::get_window_size(cfg)[1];
 
-        left_key_value = osuCatch["left"];
-        right_key_value = osuCatch["right"];
-        dash_key_value = osuCatch["dash"];
+        left_key_value = cfg["left"];
+        right_key_value = cfg["right"];
+        dash_key_value = cfg["dash"];
     
         // check for overlapping keybinds
         if (helpers::keys_overlapping({left_key_value, right_key_value, dash_key_value})) {

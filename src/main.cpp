@@ -17,7 +17,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
     // loading configs
     std::shared_ptr<Cat> cat = data::init();
-
+    
     window.create(sf::VideoMode(cat->window_width, cat->window_height), "Bongo Cat for osu!", sf::Style::Titlebar | sf::Style::Close);
     window.setFramerateLimit(MAX_FRAMERATE);
 

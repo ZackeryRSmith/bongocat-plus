@@ -12,10 +12,6 @@ class OsuMania : public Cat {
         // getting configs
         Json::Value cfg = data::cfg["cats"]["mania"];
 
-        std::cout << helpers::get_window_size(cfg)[0] << std::endl;
-        std::cout << helpers::get_window_size(cfg)[1] << std::endl;
-        fflush(stdout);
-
         window_width = helpers::get_window_size(cfg)[0];
         window_height = helpers::get_window_size(cfg)[1];
 

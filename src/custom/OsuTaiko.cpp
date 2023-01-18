@@ -13,12 +13,15 @@ class OsuTaiko : public Cat {
 
     OsuTaiko() {
         // getting configs
-        Json::Value taiko = data::cfg["cats"]["taiko"];
+        Json::Value cfg = data::cfg["cats"]["taiko"];
 
-        rim_key_value[0] = taiko["leftRim"];
-        center_key_value[0] = taiko["leftCenter"];
-        rim_key_value[1] = taiko["rightRim"];
-        center_key_value[1] = taiko["rightCenter"];
+        window_width = helpers::get_window_size(cfg)[0];
+        window_height = helpers::get_window_size(cfg)[1];
+        
+        rim_key_value[0] = cfg["leftRim"];
+        center_key_value[0] = cfg["leftCenter"];
+        rim_key_value[1] = cfg["rightRim"];
+        center_key_value[1] = cfg["rightCenter"];
 
         // check for overlapping keybinds
         if (helpers::keys_overlapping({rim_key_value[0], center_key_value[0], rim_key_value[1], center_key_value[1]})) {

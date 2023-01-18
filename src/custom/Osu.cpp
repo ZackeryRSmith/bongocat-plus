@@ -28,33 +28,36 @@ class Osu : public Cat {
         /*
          * load config
          */
-        Json::Value osu = data::cfg["cats"]["osu"];
+        Json::Value cfg = data::cfg["cats"]["osu"];
 
-        is_mouse = osu["mouse"].asBool();
-        is_enable_toggle_smoke = osu["toggleSmoke"].asBool();
+        window_width = helpers::get_window_size(cfg)[0];
+        window_height = helpers::get_window_size(cfg)[1];
+        
+        is_mouse = cfg["mouse"].asBool();
+        is_enable_toggle_smoke = cfg["toggleSmoke"].asBool();
 
-        x_paw_start = osu["pawStartingPoint"][0].asInt();
-        y_paw_start = osu["pawStartingPoint"][1].asInt();
-        x_paw_end = osu["pawEndingPoint"][0].asInt();
-        y_paw_end = osu["pawEndingPoint"][1].asInt();
+        x_paw_start = cfg["pawStartingPoint"][0].asInt();
+        y_paw_start = cfg["pawStartingPoint"][1].asInt();
+        x_paw_end = cfg["pawEndingPoint"][0].asInt();
+        y_paw_end = cfg["pawEndingPoint"][1].asInt();
 
-        paw_r = osu["pawColor"][0].asInt();
-        paw_g = osu["pawColor"][1].asInt();
-        paw_b = osu["pawColor"][2].asInt();
-        paw_a = osu["pawColor"].size() == 3 ? 255 : osu["pawColor"][3].asInt();
+        paw_r = cfg["pawColor"][0].asInt();
+        paw_g = cfg["pawColor"][1].asInt();
+        paw_b = cfg["pawColor"][2].asInt();
+        paw_a = cfg["pawColor"].size() == 3 ? 255 : cfg["pawColor"][3].asInt();
 
-        paw_arc1_width = osu["pawArc1Width"].asInt(); 
-        paw_arc2_width = osu["pawArc2Width"].asInt();
+        paw_arc1_width = cfg["pawArc1Width"].asInt(); 
+        paw_arc2_width = cfg["pawArc2Width"].asInt();
 
-        paw_edge_r = osu["pawEdgeColor"][0].asInt();
-        paw_edge_g = osu["pawEdgeColor"][1].asInt();
-        paw_edge_b = osu["pawEdgeColor"][2].asInt();
-        paw_edge_a = osu["pawEdgeColor"].size() == 3 ? 255 : osu["pawEdgeColor"][3].asInt();
+        paw_edge_r = cfg["pawEdgeColor"][0].asInt();
+        paw_edge_g = cfg["pawEdgeColor"][1].asInt();
+        paw_edge_b = cfg["pawEdgeColor"][2].asInt();
+        paw_edge_a = cfg["pawEdgeColor"].size() == 3 ? 255 : cfg["pawEdgeColor"][3].asInt();
 
-        left_key_value = osu["key1"];
-        right_key_value = osu["key2"];
-        wave_key_value = osu["wave"];
-        smoke_key_value = osu["smoke"];
+        left_key_value = cfg["key1"];
+        right_key_value = cfg["key2"];
+        wave_key_value = cfg["wave"];
+        smoke_key_value = cfg["smoke"];
     
         // check for overlapping keybinds
         if (helpers::keys_overlapping({left_key_value, right_key_value, wave_key_value, smoke_key_value})) {
