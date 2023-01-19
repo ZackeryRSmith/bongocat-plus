@@ -22,9 +22,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     window.setFramerateLimit(MAX_FRAMERATE);
 
     // initialize input
-    if (!input::init()) {
-        return EXIT_FAILURE;
-    }
+    input::init(cat);
 
     bool is_reload = false;
     bool is_show_input_debug = false;
@@ -75,17 +73,6 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
         window.clear(sf::Color(red_value, green_value, blue_value, alpha_value));
     
         cat->draw(rstates);
-
-        //switch (cat) {
-            //case 2: osuTaiko::draw(rstates);
-            //        break;
-            //case 3: osuCatch::draw(rstates);
-            //        break;
-            //case 4: osuMania::draw(rstates);
-            //        break;
-            //case 5: custom::draw(rstates);
-            //        break;
-        //}
 
         if (is_show_input_debug) {
             input::drawDebugPanel();

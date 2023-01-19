@@ -42,14 +42,9 @@ sf::Texture &load_texture(std::string path);
 }; // namespace data
 
 namespace input {
-bool init();
+void init(std::shared_ptr<Cat> cat);
 
 bool is_pressed(int key_code);
-
-bool is_joystick_connected();
-bool is_joystick_pressed(int key_code);
-
-std::pair<double, double> bezier(double ratio, std::vector<double> &points, int length);
 
 std::pair<double, double> get_xy();
 
@@ -63,6 +58,8 @@ bool is_pressed(Json::Value key_value);
 bool keys_overlapping(std::vector<Json::Value> key_arrays);
 
 std::vector<int> get_window_size(Json::Value cat_config);
+
+std::pair<double, double> bezier(double ratio, std::vector<double> &points, int length);
 }
 
 /*namespace osu {

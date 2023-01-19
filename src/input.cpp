@@ -17,15 +17,11 @@ extern "C" {
 #endif
 
 #define TOTAl_INPUT_TABLE_SIZE 256
-#define JOYSTICK_AXIS_DEADZONE 10.0f
-#define JOYSTICK_TRIGGER_DEADZONE 3.0f
 
 namespace input {
 int horizontal, vertical;
 int osu_x, osu_y, osu_h, osu_v;
 bool is_letterbox, is_left_handed;
-
-int last_joystick_keycode = -1;
 
 std::string debugMessage;
 std::string debugBitMessage;
@@ -33,26 +29,6 @@ std::string debugBitMessage;
 sf::RectangleShape debugBackground;
 sf::Font debugFont;
 sf::Text debugText;
-
-
-enum JoystickInputMapRange {
-    MinButton =     0,
-    MaxButton =     31,
-    LS_Left,
-    LS_Right,
-    LS_Up,
-    LS_Down,
-    RS_Left,
-    RS_Right,
-    RS_Up,
-    RS_Down,
-    DPad_Left,
-    DPad_Right,
-    DPad_Up,
-    DPad_Down,
-    LTrigger,
-    RTrigger
-};
 
 #if defined(__unix__) || defined(__unix)
 xdo_t* xdo;
@@ -66,7 +42,7 @@ static int _XlibErrorHandler(Display *display, XErrorEvent *event) {
 
 int INPUT_KEY_TABLE[TOTAl_INPUT_TABLE_SIZE];
 
-bool init() {
+void init(std::shared_ptr<Cat> cat) {
     for (int i = 0; i < TOTAl_INPUT_TABLE_SIZE; i++) {
         if (i >= 48 && i <= 57) {           // number
             INPUT_KEY_TABLE[i] = i - 48 + (int)sf::Keyboard::Key::Num0;
@@ -162,11 +138,11 @@ bool init() {
     // loading font
     if (!debugFont.loadFromFile("font/RobotoMono-Bold.ttf")) {
         data::error_msg("Cannot find the font : RobotoMono-Bold.ttf", "Error loading font");
-        return false;
+        exit(1);
     }
 
     // initialize debug resource
-    debugBackground.setSize(sf::Vector2f(data::cfg["windowWidth"].asInt(), data::cfg["windowHeight"].asInt()));
+    debugBackground.setSize(sf::Vector2f(cat->window_width, cat->window_height));
     debugBackground.setFillColor(sf::Color(0, 0, 0, 128));
 
     debugText.setFont(debugFont);
@@ -174,8 +150,6 @@ bool init() {
     debugText.setFillColor(sf::Color::White);
     debugText.setPosition(10.0f, 4.0f);
     debugText.setString(debugMessage);
-
-    return true;
 }
 
 sf::Keyboard::Key ascii_to_key(int key_code) {
@@ -221,117 +195,6 @@ bool is_pressed(int key_code) {
     }
 }
 
-bool is_joystick_connected() {
-    return sf::Joystick::isConnected(0);
-}
-
-bool is_joystick_pressed(int key_code) {
-    int id = 0;
-    last_joystick_keycode = key_code;
-
-    // joystick button, range 0 - 31
-    if (key_code >= MinButton && key_code <= MaxButton) {
-        return sf::Joystick::isButtonPressed(id, key_code);
-    }
-    // joystick axis, range 32 - 45
-    else {
-        float axis = 0.0f;
-
-        switch (key_code) {
-            case LS_Left:
-                axis = sf::Joystick::getAxisPosition(id, sf::Joystick::X);
-                return axis <= -JOYSTICK_AXIS_DEADZONE;
-            break;
-
-            case LS_Right:
-                axis = sf::Joystick::getAxisPosition(id, sf::Joystick::X);
-                return axis >= JOYSTICK_AXIS_DEADZONE;
-            break;
-
-            case LS_Up:
-                axis = sf::Joystick::getAxisPosition(id, sf::Joystick::Y);
-                return axis <= -JOYSTICK_AXIS_DEADZONE;
-            break;
-
-            case LS_Down:
-                axis = sf::Joystick::getAxisPosition(id, sf::Joystick::Y);
-                return axis >= JOYSTICK_AXIS_DEADZONE;
-            break;
-
-            case RS_Left:
-                axis = sf::Joystick::getAxisPosition(id, sf::Joystick::U);
-                return axis <= -JOYSTICK_AXIS_DEADZONE;
-            break;
-
-            case RS_Right:
-                axis = sf::Joystick::getAxisPosition(id, sf::Joystick::U);
-                return axis >= JOYSTICK_AXIS_DEADZONE;
-            break;
-
-            case RS_Up:
-                axis = sf::Joystick::getAxisPosition(id, sf::Joystick::V);
-                return axis <= -JOYSTICK_AXIS_DEADZONE;
-            break;
-
-            case RS_Down:
-                axis = sf::Joystick::getAxisPosition(id, sf::Joystick::V);
-                return axis >= JOYSTICK_AXIS_DEADZONE;
-            break;
-
-            case DPad_Left:
-                axis = sf::Joystick::getAxisPosition(id, sf::Joystick::PovX);
-                return axis <= -JOYSTICK_AXIS_DEADZONE;
-            break;
-
-            case DPad_Right:
-                axis = sf::Joystick::getAxisPosition(id, sf::Joystick::PovX);
-                return axis >= JOYSTICK_AXIS_DEADZONE;
-            break;
-
-            case DPad_Up:
-                axis = sf::Joystick::getAxisPosition(id, sf::Joystick::PovY);
-                return axis <= -JOYSTICK_AXIS_DEADZONE;
-            break;
-
-            case DPad_Down:
-                axis = sf::Joystick::getAxisPosition(id, sf::Joystick::PovY);
-                return axis >= JOYSTICK_AXIS_DEADZONE;
-            break;
-
-            case LTrigger:
-                axis = sf::Joystick::getAxisPosition(id, sf::Joystick::Z);
-                return axis >= JOYSTICK_TRIGGER_DEADZONE;
-            break;
-
-            case RTrigger:
-                axis = sf::Joystick::getAxisPosition(id, sf::Joystick::R);
-                return axis >= JOYSTICK_TRIGGER_DEADZONE;
-            break;
-
-            default:
-                return false;
-            break;
-        }
-    }
-
-    return false;
-}
-
-// bezier curve for osu and custom
-std::pair<double, double> bezier(double ratio, std::vector<double> &points, int length) {
-    double fact[22] = {0.001, 0.001, 0.002, 0.006, 0.024, 0.12, 0.72, 5.04, 40.32, 362.88, 3628.8, 39916.8, 479001.6, 6227020.8, 87178291.2, 1307674368.0, 20922789888.0, 355687428096.0, 6402373705728.0, 121645100408832.0, 2432902008176640.0, 51090942171709440.0};
-    int nn = (length / 2) - 1;
-    double xx = 0;
-    double yy = 0;
-
-    for (int point = 0; point <= nn; point++) {
-        double tmp = fact[nn] / (fact[point] * fact[nn - point]) * pow(ratio, point) * pow(1 - ratio, nn - point);
-        xx += points[2 * point] * tmp;
-        yy += points[2 * point + 1] * tmp;
-    }
-
-    return std::make_pair(xx / 1000, yy / 1000);
-}
 
 std::pair<double, double> get_xy() {
 #if defined(__unix__) || defined(__unix)
@@ -510,70 +373,11 @@ std::pair<double, double> get_xy() {
 }
 
 void drawDebugPanel() {
-    if (!is_joystick_connected()) {
-        debugText.setString("No joystick found...");
-        window.draw(debugBackground);
-        window.draw(debugText);
-        return;
-    }
-
-    int joy_id = 0;
-
     std::stringstream result;
-    sf::Joystick::Identification info = sf::Joystick::getIdentification(joy_id);
-
-    result << "Joystick connected : " << info.name.toAnsiString() << std::endl;
-    result << "Support button : " << sf::Joystick::getButtonCount(joy_id) << std::endl;
-
-    int offset = 0;
-    int counter = 0;
-    int max_button = (int)sf::Joystick::ButtonCount;
-    int max_row = 11;
-
-    for (int i = 0; i < max_button; ++i) {
-        int buttonID = (counter + offset);
-
-        bool isPressed = sf::Joystick::isButtonPressed(joy_id, buttonID);
-        std::string state = isPressed ? "PRESS" : "release";
-
-        result << std::setw(10) << "Button#" << std::setw(2) << buttonID << std::setw(1) << ": " << std::setw(5) << state;
-
-        counter += max_row;
-        bool shouldPrintNextLine = ((i + 1) % 3) == 0;
-
-        if (shouldPrintNextLine) {
-            result << std::endl;
-            counter = 0;
-            offset += 1;
-        }
-    }
-
-    result << std::endl;
-    result << "Axis : " << std::endl;
-
-    sf::Vector2f leftstick_axis;
-    sf::Vector2f rightstick_axis;
-    sf::Vector2f dpad_axis;
-    float left_trigger_axis;
-    float right_trigger_axis;
-
-    leftstick_axis.x = sf::Joystick::getAxisPosition(joy_id, sf::Joystick::X);
-    leftstick_axis.y = sf::Joystick::getAxisPosition(joy_id, sf::Joystick::Y);
-    rightstick_axis.x = sf::Joystick::getAxisPosition(joy_id, sf::Joystick::U);
-    rightstick_axis.y = sf::Joystick::getAxisPosition(joy_id, sf::Joystick::V);
     
-    dpad_axis.x = sf::Joystick::getAxisPosition(joy_id, sf::Joystick::PovX);
-    dpad_axis.y = sf::Joystick::getAxisPosition(joy_id, sf::Joystick::PovY);
-
-    left_trigger_axis = sf::Joystick::getAxisPosition(joy_id, sf::Joystick::Z); 
-    right_trigger_axis = sf::Joystick::getAxisPosition(joy_id, sf::Joystick::R); 
-
-    result << "LStick : " << "( " << leftstick_axis.x << "," << leftstick_axis.y << " )" << std::endl;
-    result << "RStick : " << "( " << rightstick_axis.x << "," << rightstick_axis.y << " )" << std::endl;
-    result << "LTrigger : " << left_trigger_axis << std::endl;
-    result << "RTrigger : " << right_trigger_axis << std::endl;
-    result << "DPad : " << "( " << dpad_axis.x << "," << dpad_axis.y << " )" << std::endl;
-
+    result << "Joystick connected : " << std::endl;
+    result << "Support button : " << std::endl;
+ 
     debugText.setString(result.str());
 
     window.draw(debugBackground);

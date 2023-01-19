@@ -110,7 +110,7 @@ class Osu : public Cat {
         double centerleft1 = y_paw_start + 0.69 * dist / 2;
         for (int i = 1; i < oof; i++) {
             std::vector<double> bez = {(float) x_paw_start, (float) y_paw_start, centerleft0, centerleft1, x, y};
-            auto [p0, p1] = input::bezier(1.0 * i / oof, bez, 6);
+            auto [p0, p1] = helpers::bezier(1.0 * i / oof, bez, 6);
             pss.push_back(p0);
             pss.push_back(p1);
         }
@@ -137,7 +137,7 @@ class Osu : public Cat {
         t2 *= push / le;
         for (int i = 1; i < oof; i++) {
             std::vector<double> bez = {x, y, x + s, y + t, a + s2, b + t2, a, b};
-            auto [p0, p1] = input::bezier(1.0 * i / oof, bez, 8);
+            auto [p0, p1] = helpers::bezier(1.0 * i / oof, bez, 8);
             pss.push_back(p0);
             pss.push_back(p1);
         }
@@ -145,7 +145,7 @@ class Osu : public Cat {
         pss.push_back(b);
         for (int i = oof - 1; i > 0; i--) {
             std::vector<double> bez = {1.0 * x_paw_end, 1.0 * y_paw_end, centerright0, centerright1, a, b};
-            auto [p0, p1] = input::bezier(1.0 * i / oof, bez, 6);
+            auto [p0, p1] = helpers::bezier(1.0 * i / oof, bez, 6);
             pss.push_back(p0);
             pss.push_back(p1);
         }
@@ -160,7 +160,7 @@ class Osu : public Cat {
 
         std::vector<double> pss2 = {pss[0] + dx, pss[1] + dy};
         for (int i = 1; i < iter; i++) {
-            auto [p0, p1] = input::bezier(1.0 * i / iter, pss, 38);
+            auto [p0, p1] = helpers::bezier(1.0 * i / iter, pss, 38);
             pss2.push_back(p0 + dx);
             pss2.push_back(p1 + dy);
         }

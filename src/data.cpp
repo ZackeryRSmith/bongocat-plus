@@ -31,8 +31,6 @@ extern "C" {
 class CatFactory {
 public:
     static std::shared_ptr<Cat> create(int i) {
-        std::cout << i << std::endl;
-        fflush(stdout);
         switch (i) {
             case 1: return std::make_shared<Osu>();
                     break;
