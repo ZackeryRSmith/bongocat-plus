@@ -26,19 +26,15 @@ project is still in development :)
   <summary>Table of Contents</summary>
   <ol>
     <li><a href="#about-the-project">About The Project</a></li>
-<!--    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>-->
     <li><a href="#additional-information">Additional Information</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <ul>
-      <li><a href="#windows-and-mingw">Windows and MinGW</a></li>
-      <li><a href="#linux">Linux</a></li>
       <li><a href="#building-and-testing">Building and Testing</a></li>
+      <ul>
+          <li><a href="#windows">Windows</a></li>
+          <li><a href="#macosx">Windows</a></li>
+          <li><a href="#linux">Linux</a></li>
+      </ul>
     </ul>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
@@ -52,16 +48,37 @@ Press Ctrl + R to reload configuration and images (will only reload configuratio
 
 Supported operating system:
 * Windows
+* MacOSX
 * Linux
 
-_Note_: If you're using WINE on Linux, make sure that osu! and this application run in the same `WINEPREFIX`.
-          Though I highly recommend you use Osu!Lazer if you are on linux.
+**_Note_**: If you're using WINE to run Osu make sure that this application runs under the same `WINEPREFIX`.
+          Though I highly recommend you use Osu!Lazer if you are on MaxOSX, or linux to avoid WINE.
 
 ## Contributing
-This project uses [SFML](https://www.sfml-dev.org/index.php) and [JsonCpp](https://github.com/open-source-parsers/jsoncpp). JsonCpp libraries are directly included in the source using the provided `amalgamation.py` from the developers.
+This project uses [SFML](https://www.sfml-dev.org/index.php) and [JsonCpp](https://github.com/open-source-parsers/jsoncpp). JsonCpp libraries are directly included in the source using the provided `amalgamation.py` from the developers. See below on how to compile bongocat-plus
 
-#### Windows and MinGW
-To build the source, download the SFML libraries [here](https://www.sfml-dev.org/index.php), copy `Makefile.windows` to `Makefile`, then replace *`<SFML-folder>`* in `Makefile` with the desired folder.
+### Building and Testing
+#### Windows
+Download the SFML library [here](https://www.sfml-dev.org/index.php), once done and extracted, clone this repository `git clone https://github.com/ZackeryRSmith/bongocat-plus && cd bongocat-plus`. If you don't already have it, install [CMake](https://cmake.org/). Now run the following commands to build bongocat-plus
+
+```
+mkdir build
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DSFML_ROOT=/path/to/SFML <-- BE SURE TO CHANGE THIS TO THE PATH OF YOUR SFML INSTALLATION
+cd build && make
+```
+
+Boom, you have just compiled bongocat-plus.
+
+#### MacOSX
+To make life much easier for you I'd recommend you install [brew](https://brew.sh/); a package manager for MacOSX. Once installed run `brew install sfml`. Once done, clone the bongocat-plus repository `git clone https://github.com/ZackeryRSmith/bongocat-plus && cd bongocat-plus`. Now run the following commands to build bongo-cat
+
+```
+mkdir build
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
+cd build && make
+```
+
+Boom, you have just compiled bongocat-plus.
 
 #### Linux
 You need to have these dependencies installed. Check with your package manager for the exact name of these dependencies on your distro:
@@ -72,24 +89,15 @@ You need to have these dependencies installed. Check with your package manager f
 - x11
 - xrandr
 
-Then, copy `Makefile.linux` to `Makefile`.
+Now clone this repository and run the following commands to build bongocat-plus
 
-### Building and Testing
-To build, run this command from the base directory:
-
-```sh
-make
+```
+mkdir build
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
+cd build && make
 ```
 
-To test the program, run this from the base directory:
-
-```sh
-make test
-```
-
-Alternatively, you can copy the newly-compiled `bin/bongo.exe` or `bin/bongo` into the base directory and execute it.
-
-If you have troubles compiling, it can be due to version mismatch between your compiler and SFML. See [bongocat-osu#43](https://github.com/kuroni/bongocat-osu/issues/43) for more information.
+**If you have troubles compiling, it can be due to version mismatch between your compiler and SFML. See [bongocat-osu#43](https://github.com/kuroni/bongocat-osu/issues/43) for more information.**
 
 ## Acknowledgments
 *  [HamishDuncanson](https://github.com/HamishDuncanson)
