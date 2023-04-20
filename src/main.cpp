@@ -17,8 +17,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
     // loading configs
     std::shared_ptr<Cat> cat = data::init();
+
+    bool borderless = data::cfg["decoration"]["borderless"].asBool();
     
-    window.create(sf::VideoMode(cat->window_width, cat->window_height), "Bongo Cat for osu!", sf::Style::Titlebar | sf::Style::Close);
+    window.create(sf::VideoMode(cat->window_width, cat->window_height), "BongoCat+", borderless ? sf::Style::None : sf::Style::Titlebar | sf::Style::Close);
     window.setFramerateLimit(MAX_FRAMERATE);
 
     // initialize input
@@ -27,6 +29,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     bool is_reload = false;
     bool is_show_input_debug = false;
 
+    // used if window is borderless
+    sf::Vector2i grabbed_offset;
+    bool grabbed_window = false;
+
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -34,7 +40,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
             case sf::Event::Closed:
                 window.close();
                 break;
-
+            
             case sf::Event::KeyPressed:
                 // get reload config prompt
                 if (event.key.code == sf::Keyboard::R && event.key.control) {
@@ -52,6 +58,23 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
                     is_show_input_debug = !is_show_input_debug;
                     break;
                 }
+
+            case sf::Event::MouseButtonPressed:
+                if (event.mouseButton.button == sf::Mouse::Left && borderless) {
+                    grabbed_offset = window.getPosition() - sf::Mouse::getPosition();
+                    grabbed_window = true;
+                }
+                break;
+            
+            case sf::Event::MouseButtonReleased:
+                if (event.mouseButton.button == sf::Mouse::Left && borderless)
+                    grabbed_window = false;
+                break;
+            
+            case sf::Event::MouseMoved:
+                if (grabbed_window && borderless)
+                    window.setPosition(sf::Mouse::getPosition() + grabbed_offset);
+                break;
 
             default:
                 is_reload = false;

@@ -1,5 +1,5 @@
 {
-    "cat": 4,
+    "cat": 1,
     "cats": {
         "osu": {
             "mouse": true,
@@ -62,6 +62,7 @@
     },
 
     "decoration": {
+        "borderless": false,
         "leftHanded": false,
         "backgroundColor": [224, 22, 66],
         "offsetX": [0, 11],
