@@ -19,6 +19,18 @@ project is still in development :)
     ·
     <a href="https://github.com/ZackeryRSmith/bongocat-plus/issues">Request Feature</a>
   </p>
+  
+  <p align="center">
+    <!--<img alt="Windows build status" src="https://img.shields.io/badge/Windows%20build-Passing-brightgreen?style=for-the-badge&logo=windows">-->
+    <img alt="Windows build status" src="https://img.shields.io/badge/Windows%20build-Testing-yellow?style=for-the-badge&logo=windows">
+    <!--<img alt="Windows build status" src="https://img.shields.io/badge/Windows%20build-Failing-red?style=for-the-badge&logo=windows">-->
+    <img alt="Mac build status" src="https://img.shields.io/badge/Mac%20build-Passing-brightgreen?style=for-the-badge&logo=apple">
+    <!--<img alt="Mac build status" src="https://img.shields.io/badge/Mac%20build-Testing-yellow?style=for-the-badge&logo=apple">-->
+    <!--<img alt="Mac build status" src="https://img.shields.io/badge/Mac%20build-Failing-red?style=for-the-badge&logo=apple">-->
+    <!--<img alt="Linux build status" src="https://img.shields.io/badge/Linux%20build-Passing-green?style=for-the-badge&logo=linux&logoColor=white">-->
+    <img alt="Linux build status" src="https://img.shields.io/badge/Linux%20build-Testing-yellow?style=for-the-badge&logo=linux&logoColor=white">
+    <!--<img alt="Linux build status" src="https://img.shields.io/badge/Linux%20build-Failing-red?style=for-the-badge&logo=linux&logoColor=white">-->
+  </p>
 </div>
 
 <!-- TABLE OF CONTENTS -->
@@ -70,7 +82,7 @@ cd build && make
 Boom, you have just compiled bongocat-plus.
 
 #### MacOSX
-To make life much easier for you I'd recommend you install [brew](https://brew.sh/); a package manager for MacOSX. Once installed run `brew install sfml`. Once done, clone the bongocat-plus repository `git clone https://github.com/ZackeryRSmith/bongocat-plus && cd bongocat-plus`. Now run the following commands to build bongo-cat
+To make life much easier for you I'd recommend you install [brew](https://brew.sh/); a package manager for MacOSX. Once installed run `brew install sfml` and `brew install xquartz`. Once done, clone the bongocat-plus repository `git clone https://github.com/ZackeryRSmith/bongocat-plus && cd bongocat-plus`. Now run the following commands to build bongo-cat
 
 ```
 mkdir build
