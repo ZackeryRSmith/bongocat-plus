@@ -41,7 +41,6 @@ find_package(SFML 2.5 COMPONENTS graphics window system REQUIRED)
 target_link_libraries(${PROJECT_NAME} PRIVATE sfml-graphics sfml-window sfml-system)
 
 if(APPLE OR UNIX)
-  # Check for X11 library and add it as a dependency
   find_package(X11 REQUIRED)
   include_directories(${X11_INCLUDE_DIR})
   target_link_libraries(${PROJECT_NAME} PRIVATE ${X11_LIBRARIES})
@@ -54,7 +53,6 @@ if(APPLE OR UNIX)
   include_directories(${XRANDR_INCLUDE_DIR})
   target_link_libraries(${PROJECT_NAME} PRIVATE ${XRANDR_LIBRARIES})
 
-  # Check for libxdo library and add it as a dependency
   find_library(XDO_LIBRARY xdo)
   if(XDO_LIBRARY)
     target_link_libraries(${PROJECT_NAME} PRIVATE ${XDO_LIBRARY})
@@ -65,6 +63,22 @@ if(APPLE OR UNIX)
   message("${BoldMagenta}SDL2 DIR:${ColorReset} ${SDL2_INCLUDE_DIR}")
   message("${BoldMagenta}XRANDR DIR:${ColorReset} ${XRANDR_INCLUDE_DIR}")
   message("${BoldMagenta}XDO DIR:${ColorReset} ${XDO_LIBRARY}")
+  
+  if(APPLE)
+    find_library(COREGRAPHICS_LIBRARY CoreGraphics)
+    if(COREGRAPHICS_LIBRARY)
+        target_link_libraries(${PROJECT_NAME} PRIVATE ${COREGRAPHICS_LIBRARY})
+    endif()
+
+    find_library(COREFOUNDATION_LIBRARY CoreFoundation)
+    if(COREFOUNDATION_LIBRARY)
+        target_link_libraries(${PROJECT_NAME} PRIVATE ${COREFOUNDATION_LIBRARY})
+    endif()
+
+    message("COREGRAPHICS DIR: ${COREGRAPHICS_LIBRARY}")
+    message("COREFOUNDATION DIR: ${COREFOUNDATION_LIBRARY}")
+  endif()
+
   message("${BoldWhite}-------------------------${ColorReset}\n")
 endif()
 
