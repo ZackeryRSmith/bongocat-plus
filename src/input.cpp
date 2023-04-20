@@ -4,7 +4,13 @@
 #include <iomanip>
 #include <SFML/Window.hpp>
 
-#if defined(__unix__) || defined(__unix) || __APPLE__
+#if _WIN32
+#include <windows.h>
+#elif __APPLE__
+#include <ApplicationServices/ApplicationServices.h>
+#include <CoreFoundation/CoreFoundation.h>
+#include <CoreGraphics/CoreGraphics.h>
+#elif defined(__unix__) || defined(__unix)
 #include <X11/Xlib.h>
 #include <X11/extensions/Xrandr.h>
 #include <X11/keysym.h>
@@ -12,8 +18,6 @@
 extern "C" {
 #include <xdo.h>
 }
-#else
-#include <windows.h>
 #endif
 
 #define TOTAl_INPUT_TABLE_SIZE 256
@@ -30,7 +34,7 @@ sf::RectangleShape debugBackground;
 sf::Font debugFont;
 sf::Text debugText;
 
-#if defined(__unix__) || defined(__unix) || __APPLE__
+#if defined(__unix__) || defined(__unix)
 xdo_t* xdo;
 Display* dpy;
 Window foreground_window;
@@ -57,14 +61,14 @@ void init(std::shared_ptr<Cat> cat) {
         }
     }
 
-    INPUT_KEY_TABLE[27] = (int)sf::Keyboard::Key::Escape;
-    INPUT_KEY_TABLE[17] = (int)sf::Keyboard::Key::LControl;
-    INPUT_KEY_TABLE[16] = (int)sf::Keyboard::Key::LShift;
-    INPUT_KEY_TABLE[18] = (int)sf::Keyboard::Key::LAlt;
-    INPUT_KEY_TABLE[17] = (int)sf::Keyboard::Key::RControl;
-    INPUT_KEY_TABLE[16] = (int)sf::Keyboard::Key::RShift;
-    INPUT_KEY_TABLE[18] = (int)sf::Keyboard::Key::RAlt;
-    INPUT_KEY_TABLE[93] = (int)sf::Keyboard::Key::Menu;
+    INPUT_KEY_TABLE[27]  = (int)sf::Keyboard::Key::Escape;
+    INPUT_KEY_TABLE[17]  = (int)sf::Keyboard::Key::LControl;
+    INPUT_KEY_TABLE[16]  = (int)sf::Keyboard::Key::LShift;
+    INPUT_KEY_TABLE[18]  = (int)sf::Keyboard::Key::LAlt;
+    INPUT_KEY_TABLE[17]  = (int)sf::Keyboard::Key::RControl;
+    INPUT_KEY_TABLE[16]  = (int)sf::Keyboard::Key::RShift;
+    INPUT_KEY_TABLE[18]  = (int)sf::Keyboard::Key::RAlt;
+    INPUT_KEY_TABLE[93]  = (int)sf::Keyboard::Key::Menu;
     INPUT_KEY_TABLE[219] = (int)sf::Keyboard::Key::LBracket;
     INPUT_KEY_TABLE[221] = (int)sf::Keyboard::Key::RBracket;
     INPUT_KEY_TABLE[186] = (int)sf::Keyboard::Key::Semicolon;
@@ -76,25 +80,25 @@ void init(std::shared_ptr<Cat> cat) {
     INPUT_KEY_TABLE[192] = (int)sf::Keyboard::Key::Tilde;
     INPUT_KEY_TABLE[187] = (int)sf::Keyboard::Key::Equal;
     INPUT_KEY_TABLE[189] = (int)sf::Keyboard::Key::Hyphen;
-    INPUT_KEY_TABLE[32] = (int)sf::Keyboard::Key::Space;
-    INPUT_KEY_TABLE[13] = (int)sf::Keyboard::Key::Enter;
-    INPUT_KEY_TABLE[8] = (int)sf::Keyboard::Key::Backspace;
-    INPUT_KEY_TABLE[9] = (int)sf::Keyboard::Key::Tab;
-    INPUT_KEY_TABLE[33] = (int)sf::Keyboard::Key::PageUp;
-    INPUT_KEY_TABLE[34] = (int)sf::Keyboard::Key::PageDown;
-    INPUT_KEY_TABLE[35] = (int)sf::Keyboard::Key::End;
-    INPUT_KEY_TABLE[36] = (int)sf::Keyboard::Key::Home;
-    INPUT_KEY_TABLE[45] = (int)sf::Keyboard::Key::Insert;
-    INPUT_KEY_TABLE[46] = (int)sf::Keyboard::Key::Delete;
+    INPUT_KEY_TABLE[32]  = (int)sf::Keyboard::Key::Space;
+    INPUT_KEY_TABLE[13]  = (int)sf::Keyboard::Key::Enter;
+    INPUT_KEY_TABLE[8]   = (int)sf::Keyboard::Key::Backspace;
+    INPUT_KEY_TABLE[9]   = (int)sf::Keyboard::Key::Tab;
+    INPUT_KEY_TABLE[33]  = (int)sf::Keyboard::Key::PageUp;
+    INPUT_KEY_TABLE[34]  = (int)sf::Keyboard::Key::PageDown;
+    INPUT_KEY_TABLE[35]  = (int)sf::Keyboard::Key::End;
+    INPUT_KEY_TABLE[36]  = (int)sf::Keyboard::Key::Home;
+    INPUT_KEY_TABLE[45]  = (int)sf::Keyboard::Key::Insert;
+    INPUT_KEY_TABLE[46]  = (int)sf::Keyboard::Key::Delete;
     INPUT_KEY_TABLE[107] = (int)sf::Keyboard::Key::Add;
     INPUT_KEY_TABLE[109] = (int)sf::Keyboard::Key::Subtract;
     INPUT_KEY_TABLE[106] = (int)sf::Keyboard::Key::Multiply;
     INPUT_KEY_TABLE[111] = (int)sf::Keyboard::Key::Divide;
-    INPUT_KEY_TABLE[37] = (int)sf::Keyboard::Key::Left;
-    INPUT_KEY_TABLE[39] = (int)sf::Keyboard::Key::Right;
-    INPUT_KEY_TABLE[38] = (int)sf::Keyboard::Key::Up;
-    INPUT_KEY_TABLE[40] = (int)sf::Keyboard::Key::Down;
-    INPUT_KEY_TABLE[19] = (int)sf::Keyboard::Key::Pause;
+    INPUT_KEY_TABLE[37]  = (int)sf::Keyboard::Key::Left;
+    INPUT_KEY_TABLE[39]  = (int)sf::Keyboard::Key::Right;
+    INPUT_KEY_TABLE[38]  = (int)sf::Keyboard::Key::Up;
+    INPUT_KEY_TABLE[40]  = (int)sf::Keyboard::Key::Down;
+    INPUT_KEY_TABLE[19]  = (int)sf::Keyboard::Key::Pause;
     INPUT_KEY_TABLE[189] = (int)sf::Keyboard::Key::Dash;
 
     is_letterbox = data::cfg["resolution"]["letterboxing"].asBool();
@@ -104,7 +108,26 @@ void init(std::shared_ptr<Cat> cat) {
     osu_v = data::cfg["resolution"]["verticalPosition"].asInt();
     is_left_handed = data::cfg["decoration"]["leftHanded"].asBool();
 
-#if defined(__unix__) || defined(__unix) || __APPLE__
+#if _WIN32
+    // getting resolution
+    RECT desktop;
+    const HWND h_desktop = GetDesktopWindow();
+    GetWindowRect(h_desktop, &desktop);
+    horizontal = desktop.right;
+    vertical = desktop.bottom;
+#elif __APPLE__
+    // Get the main display
+    CGDirectDisplayID displayID = kCGDirectMainDisplay;
+    CGDisplayModeRef mode = CGDisplayCopyDisplayMode(displayID);
+    
+    int width = CGDisplayModeGetWidth(mode);
+    int height = CGDisplayModeGetHeight(mode);
+    
+    CGDisplayModeRelease(mode);
+    
+    horizontal = width;
+    vertical = height;
+#elif defined(__unix__) || defined(__unix)
     // Set x11 error handler
     XSetErrorHandler(_XlibErrorHandler);
 
@@ -119,20 +142,13 @@ void init(std::shared_ptr<Cat> cat) {
     XRRScreenConfiguration *conf = XRRGetScreenInfo(dpy, root);
     SizeID current_size_id = XRRConfigCurrentConfiguration(conf, &current_rotation);
 
-    int current_width = xrrs[current_size_id].width;
-    int current_height = xrrs[current_size_id].height;
+    int width = xrrs[current_size_id].width;
+    int height = xrrs[current_size_id].height;
 
-    horizontal = current_width;
-    vertical = current_height;
+    horizontal = width;
+    vertical = height;
 
     xdo = xdo_new(NULL);
-#else
-    // getting resolution
-    RECT desktop;
-    const HWND h_desktop = GetDesktopWindow();
-    GetWindowRect(h_desktop, &desktop);
-    horizontal = desktop.right;
-    vertical = desktop.bottom;
 #endif
 
     // loading font
@@ -163,7 +179,15 @@ sf::Keyboard::Key ascii_to_key(int key_code) {
 
 // for some special cases of num dot and such
 bool is_pressed_fallback(int key_code) {
-#if defined(__unix__) || defined(__unix) || __APPLE__ // code snippet from SFML
+#if _WIN32
+    return (GetAsyncKeyState(key_code) & 0x8000) != 0;
+#elif __APPLE__
+    UInt32 key_map[4] = {0};
+    CGEventRef event = CGEventCreateKeyboardEvent(NULL, (CGKeyCode)key_code, true);
+    CGEventFlags flags = CGEventGetFlags(event);
+    CFRelease(event);
+    return (flags & kCGEventFlagMaskCommand) != 0;
+#elif defined(__unix__) || defined(__unix) // code snippet from SFML
     KeyCode keycode = XKeysymToKeycode(dpy, key_code);
     if (keycode != 0) {
         char keys[32];
@@ -173,8 +197,6 @@ bool is_pressed_fallback(int key_code) {
     else {
         return false;
     }
-#else
-    return (GetAsyncKeyState(key_code) & 0x8000) != 0;
 #endif
 }
 
@@ -197,103 +219,99 @@ bool is_pressed(int key_code) {
 
 
 std::pair<double, double> get_xy() {
-#if defined(__unix__) || defined(__unix) || __APPLE__
-    double letter_x, letter_y, s_height, s_width;
-    bool found_window = (xdo_get_focused_window_sane(xdo, &foreground_window) == 0);
+#if _WIN32
+    HWND handle = GetForegroundWindow();
+if (handle) {
+    RECT windowRect;
+    GetWindowRect(handle, &windowRect);
+    s_width = windowRect.right - windowRect.left;
+    s_height = windowRect.bottom - windowRect.top;
+    letter_x = windowRect.left;
+    letter_y = windowRect.top;
+} else {
+    s_width = horizontal;
+    s_height = vertical;
+    letter_x = 0;
+    letter_y = 0;
+}
+double x, y;
+POINT point;
+if (GetCursorPos(&point)) {
+    double fx = (1.0 * point.x - letter_x) / s_width;
+    if (is_left_handed) {
+        fx = 1 - fx;
+    }
+    double fy = (1.0 * point.y - letter_y) / s_height;
+    fx = std::min(fx, 1.0);
+    fx = std::max(fx, 0.0);
+    fy = std::min(fy, 1.0);
+    fy = std::max(fy, 0.0);
+    x = -97 * fx + 44 * fy + 184;
+    y = -76 * fx - 40 * fy + 324;
+} else {
+    x = -1;
+    y = -1;
+}
+#elif __APPLE__
+    double x, y;
+    
+    // getting device resolution
+    double s_height, s_width;
+    CGRect displayBounds = CGDisplayBounds(CGMainDisplayID());
+    s_height = displayBounds.size.height;
+    s_width = displayBounds.size.width;
 
-    if (found_window) {
-        unsigned char* name_ret;
-        int name_len_ret;
-        int name_type;
+    // getting mouse position
+    CGPoint mousePos;
+    CGEventRef event = CGEventCreate(NULL);
+    mousePos = CGEventGetLocation(event);
+    CFRelease(event);
 
-        xdo_get_window_name(xdo, foreground_window, &name_ret, &name_len_ret, &name_type);
-        bool can_get_name = (name_len_ret > 0);
-
-        if (can_get_name) {
-
-            std::string title = "";
-
-            if (name_ret != NULL)
-            {
-                std::string foreground_title(reinterpret_cast<char*>(name_ret));
-                title = foreground_title;
-            }
-
-            if (title.find("osu!") == 0) {
-                if (!is_letterbox) {
-
-                    int x_ret;
-                    int y_ret;
-                    unsigned int width_ret;
-                    unsigned int height_ret;
-
-                    bool can_get_location = (xdo_get_window_location(xdo, foreground_window, &x_ret, &y_ret, NULL) == 0);
-                    bool can_get_size = (xdo_get_window_size(xdo, foreground_window, &width_ret, &height_ret) == 0);
-
-                    bool can_get_rect = (can_get_location && can_get_size);
-
-                    bool is_fullscreen_window = (horizontal == width_ret) && (vertical == height_ret);
-                    bool should_not_resize_screen = (!can_get_rect || is_fullscreen_window);
-
-                    if (should_not_resize_screen) {
-                        s_width = horizontal;
-                        s_height = vertical;
-
-                        letter_x = 0;
-                        letter_y = 0;
-                    }
-                    else {
-                        s_height = osu_y * 0.8;
-                        s_width = s_height * 4 / 3;
-
-                        long left = x_ret;
-                        long top = y_ret;
-                        long right = left + width_ret;
-                        long bottom = top + height_ret;
-
-                        letter_x = left + ((right - left) - s_width) / 2;
-                        letter_y = top + osu_y * 0.117;
-                    }
-                }
-                else {
-                    s_height = osu_y * 0.8;
-                    s_width = s_height * 4 / 3;
-
-                    double l = (horizontal - osu_x) * (osu_h + 100) / 200.0;
-                    double r = l + osu_x;
-                    letter_x = l + ((r - l) - s_width) / 2;
-                    letter_y = (vertical - osu_y) * (osu_v + 100) / 200.0 + osu_y * 0.117;
-                }
-            }
-            else {
-                s_width = horizontal;
-                s_height = vertical;
-                letter_x = 0;
-                letter_y = 0;
+    // getting window under mouse cursor
+    CFArrayRef windows = CGWindowListCopyWindowInfo(kCGWindowListOptionOnScreenOnly, kCGNullWindowID);
+    CFIndex count = CFArrayGetCount(windows);
+    for (CFIndex i = 0; i < count; i++) {
+        CFDictionaryRef window = (CFDictionaryRef) CFArrayGetValueAtIndex(windows, i);
+        CFStringRef name = (CFStringRef) CFDictionaryGetValue(window, kCGWindowName);
+        if (name && CFGetTypeID(name) == CFStringGetTypeID() && CFStringGetLength(name) > 0) {
+            CGRect bounds;
+            CFDictionaryRef boundsDict = (CFDictionaryRef) CFDictionaryGetValue(window, kCGWindowBounds);
+            CGRectMakeWithDictionaryRepresentation(boundsDict, &bounds);
+            if (CGRectContainsPoint(bounds, mousePos)) {
+                double fx = (mousePos.x - bounds.origin.x) / bounds.size.width;
+                double fy = (mousePos.y - bounds.origin.y) / bounds.size.height;
+                fx = std::min(fx, 1.0);
+                fx = std::max(fx, 0.0);
+                fy = std::min(fy, 1.0);
+                fy = std::max(fy, 0.0);
+                x = -97 * fx + 44 * fy + 184;
+                y = -76 * fx - 40 * fy + 324;
             }
         }
-        else {
-            s_width = horizontal;
-            s_height = vertical;
-            letter_x = 0;
-            letter_y = 0;
-        }
     }
-    else {
-        s_width = horizontal;
-        s_height = vertical;
-        letter_x = 0;
-        letter_y = 0;
-    }
+    CFRelease(windows);
+#elif defined(__unix__) || defined(__unix)
+    double letter_x = 0; 
+    double letter_y = 0; 
+    double s_height = horizontal;
+    double s_width = vertical;
+
+    s_width = horizontal;
+    s_height = vertical;
+    letter_x = 0;
+    letter_y = 0;
 
     double x = 0, y = 0;
     int px = 0, py = 0;
-
+    
     if (xdo_get_mouse_location(xdo, &px, &py, NULL) == 0) {
-
-        if (!is_letterbox) {
-            letter_x = floor(1.0 * px / osu_x) * osu_x;
-            letter_y = floor(1.0 * py / osu_y) * osu_y;
+        Window window_under_cursor;
+        if (xdo_get_window_under_mouse(xdo, &window_under_cursor) == 0) {
+            unsigned int width_ret, height_ret;
+            if (xdo_get_window_size(xdo, window_under_cursor, &width_ret, &height_ret) == 0) {
+                s_width = width_ret;
+                s_height = height_ret;
+            }
         }
 
         double fx = (1.0 * px - letter_x) / s_width;
@@ -310,60 +328,6 @@ std::pair<double, double> get_xy() {
         fy = std::min(fy, 1.0);
         fy = std::max(fy, 0.0);
 
-        x = -97 * fx + 44 * fy + 184;
-        y = -76 * fx - 40 * fy + 324;
-    }
-#else
-    // getting device resolution
-    double letter_x, letter_y, s_height, s_width;
-
-    HWND handle = GetForegroundWindow();
-    if (handle) {
-        TCHAR w_title[256];
-        GetWindowText(handle, w_title, GetWindowTextLength(handle));
-        std::string title = w_title;
-        if (title.find("osu!") == 0) {
-            RECT oblong;
-            GetWindowRect(handle, &oblong);
-            s_height = osu_y * 0.8;
-            s_width = s_height * 4 / 3;
-            if (!is_letterbox) {
-                letter_x = oblong.left + ((oblong.right - oblong.left) - s_width) / 2;
-                letter_y = oblong.top + osu_y * 0.117;
-            } else {
-                double l = (horizontal - osu_x) * (osu_h + 100) / 200.0;
-                double r = l + osu_x;
-                letter_x = l + ((r - l) - s_width) / 2;
-                letter_y = (vertical - osu_y) * (osu_v + 100) / 200.0 + osu_y * 0.117;
-            }
-        } else {
-            s_width = horizontal;
-            s_height = vertical;
-            letter_x = 0;
-            letter_y = 0;
-        }
-    } else {
-        s_width = horizontal;
-        s_height = vertical;
-        letter_x = 0;
-        letter_y = 0;
-    }
-    double x, y;
-    POINT point;
-    if (GetCursorPos(&point)) {
-        if (!is_letterbox) {
-            letter_x = floor(1.0 * point.x / osu_x) * osu_x;
-            letter_y = floor(1.0 * point.y / osu_y) * osu_y;
-        }
-        double fx = (1.0 * point.x - letter_x) / s_width;
-        if (is_left_handed) {
-            fx = 1 - fx;
-        }
-        double fy = (1.0 * point.y - letter_y) / s_height;
-        fx = std::min(fx, 1.0);
-        fx = std::max(fx, 0.0);
-        fy = std::min(fy, 1.0);
-        fy = std::max(fy, 0.0);
         x = -97 * fx + 44 * fy + 184;
         y = -76 * fx - 40 * fy + 324;
     }
@@ -385,7 +349,7 @@ void drawDebugPanel() {
 }
 
 void cleanup() {
-#if defined(__unix__) || defined(__unix) || __APPLE__
+#if defined(__unix__) || defined(__unix)
     delete xdo;
     XCloseDisplay(dpy);
 #endif
