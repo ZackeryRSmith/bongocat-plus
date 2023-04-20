@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.10)
 project(bongocat)
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake_modules/")
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -37,6 +39,34 @@ find_package(SFML 2.5 COMPONENTS graphics window system REQUIRED)
 
 # Link SFML libraries
 target_link_libraries(${PROJECT_NAME} PRIVATE sfml-graphics sfml-window sfml-system)
+
+if(APPLE OR UNIX)
+  # Check for X11 library and add it as a dependency
+  find_package(X11 REQUIRED)
+  include_directories(${X11_INCLUDE_DIR})
+  target_link_libraries(${PROJECT_NAME} PRIVATE ${X11_LIBRARIES})
+
+  find_package(SDL2 REQUIRED)
+  include_directories(${SDL2_INCLUDE_DIR})
+  target_link_libraries(${PROJECT_NAME} PRIVATE ${SDL2_LIBRARIES})
+
+  find_package(Xrandr REQUIRED)
+  include_directories(${XRANDR_INCLUDE_DIR})
+  target_link_libraries(${PROJECT_NAME} PRIVATE ${XRANDR_LIBRARIES})
+
+  # Check for libxdo library and add it as a dependency
+  find_library(XDO_LIBRARY xdo)
+  if(XDO_LIBRARY)
+    target_link_libraries(${PROJECT_NAME} PRIVATE ${XDO_LIBRARY})
+  endif()
+  
+  message("\n${BoldWhite}___| ${BoldBlue}*${ColorReset}NIX SPECIFIC'S ${BoldWhite}|___")
+  message("${BoldMagenta}X11 DIR:${ColorReset} ${X11_INCLUDE_DIR}")
+  message("${BoldMagenta}SDL2 DIR:${ColorReset} ${SDL2_INCLUDE_DIR}")
+  message("${BoldMagenta}XRANDR DIR:${ColorReset} ${XRANDR_INCLUDE_DIR}")
+  message("${BoldMagenta}XDO DIR:${ColorReset} ${XDO_LIBRARY}")
+  message("${BoldWhite}-------------------------${ColorReset}\n")
+endif()
 
 # Print some useful information about the build
 message("${BoldRed}Application dir:${ColorReset} ${CMAKE_CURRENT_BINARY_DIR}")
