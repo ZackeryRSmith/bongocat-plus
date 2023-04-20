@@ -2,14 +2,14 @@
 #include <iostream>
 #include <memory>
 
-#if !defined(__unix__) && !defined(__unix)
+#if _WIN32
     #include <windows.h>
 #endif
 
 
 sf::RenderWindow window;
 
-#if defined(__unix__) || defined(__unix)
+#if defined(__unix__) || defined(__unix) || __APPLE__
 int main(int argc, char ** argv) {
 #else
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {

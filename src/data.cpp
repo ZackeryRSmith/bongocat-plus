@@ -2,7 +2,7 @@
 #include <memory>
 #define BONGO_ERROR 1
 
-#if defined(__unix__) || defined(__unix)
+#if defined(__unix__) || defined(__unix) || __APPLE__
 #include <unistd.h>
 #include <limits.h>
 
@@ -65,7 +65,7 @@ void create_config() {
 }
 
 void error_msg(std::string error, std::string title) {
-#if defined(__unix__) || defined(__unix)
+#if defined(__unix__) || defined(__unix) || __APPLE__
 
     SDL_MessageBoxButtonData buttons[] = {
         { SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, 0, "Retry" },

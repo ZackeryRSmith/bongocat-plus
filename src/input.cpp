@@ -4,7 +4,7 @@
 #include <iomanip>
 #include <SFML/Window.hpp>
 
-#if defined(__unix__) || defined(__unix)
+#if defined(__unix__) || defined(__unix) || __APPLE__
 #include <X11/Xlib.h>
 #include <X11/extensions/Xrandr.h>
 #include <X11/keysym.h>
@@ -30,7 +30,7 @@ sf::RectangleShape debugBackground;
 sf::Font debugFont;
 sf::Text debugText;
 
-#if defined(__unix__) || defined(__unix)
+#if defined(__unix__) || defined(__unix) || __APPLE__
 xdo_t* xdo;
 Display* dpy;
 Window foreground_window;
@@ -104,7 +104,7 @@ void init(std::shared_ptr<Cat> cat) {
     osu_v = data::cfg["resolution"]["verticalPosition"].asInt();
     is_left_handed = data::cfg["decoration"]["leftHanded"].asBool();
 
-#if defined(__unix__) || defined(__unix)
+#if defined(__unix__) || defined(__unix) || __APPLE__
     // Set x11 error handler
     XSetErrorHandler(_XlibErrorHandler);
 
@@ -163,7 +163,7 @@ sf::Keyboard::Key ascii_to_key(int key_code) {
 
 // for some special cases of num dot and such
 bool is_pressed_fallback(int key_code) {
-#if defined(__unix__) || defined(__unix) // code snippet from SFML
+#if defined(__unix__) || defined(__unix) || __APPLE__ // code snippet from SFML
     KeyCode keycode = XKeysymToKeycode(dpy, key_code);
     if (keycode != 0) {
         char keys[32];
@@ -197,7 +197,7 @@ bool is_pressed(int key_code) {
 
 
 std::pair<double, double> get_xy() {
-#if defined(__unix__) || defined(__unix)
+#if defined(__unix__) || defined(__unix) || __APPLE__
     double letter_x, letter_y, s_height, s_width;
     bool found_window = (xdo_get_focused_window_sane(xdo, &foreground_window) == 0);
 
@@ -385,7 +385,7 @@ void drawDebugPanel() {
 }
 
 void cleanup() {
-#if defined(__unix__) || defined(__unix)
+#if defined(__unix__) || defined(__unix) || __APPLE__
     delete xdo;
     XCloseDisplay(dpy);
 #endif
