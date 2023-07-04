@@ -3,6 +3,9 @@
 *.o
 .DS_Store
 .cache
+.vscode
+CMakeFiles
 bongo
 build
 NOTE
+SFML
