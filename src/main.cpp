@@ -12,15 +12,20 @@ sf::RenderWindow window;
 #if defined(__unix__) || defined(__unix) || __APPLE__
 int main(int argc, char ** argv) {
 #else
-int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+    FreeConsole(); // maybe not the best option because the console is still 
+                   // running with the console subsystem, but it does hide the console
 #endif
-
     // loading configs
     std::shared_ptr<Cat> cat = data::init();
 
     bool borderless = data::cfg["decoration"]["borderless"].asBool();
     
-    window.create(sf::VideoMode(cat->window_width, cat->window_height), "BongoCat+", borderless ? sf::Style::None : sf::Style::Titlebar | sf::Style::Close);
+    window.create(
+        sf::VideoMode(cat->window_width, cat->window_height),                 // window size
+        "BongoCat+",                                                          // window title
+        borderless ? sf::Style::None : sf::Style::Titlebar | sf::Style::Close // window style
+    );
     window.setFramerateLimit(MAX_FRAMERATE);
 
     // initialize input
