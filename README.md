@@ -21,8 +21,8 @@ project is still in development :)
   </p>
   
   <p align="center">
-    <!--<img alt="Windows build status" src="https://img.shields.io/badge/Windows%20build-Passing-brightgreen?style=for-the-badge&logo=windows">-->
-    <img alt="Windows build status" src="https://img.shields.io/badge/Windows%20build-Testing-yellow?style=for-the-badge&logo=windows">
+    <img alt="Windows build status" src="https://img.shields.io/badge/Windows%20build-Passing-brightgreen?style=for-the-badge&logo=windows">
+    <!--<img alt="Windows build status" src="https://img.shields.io/badge/Windows%20build-Testing-yellow?style=for-the-badge&logo=windows">-->
     <!--<img alt="Windows build status" src="https://img.shields.io/badge/Windows%20build-Failing-red?style=for-the-badge&logo=windows">-->
     <img alt="Mac build status" src="https://img.shields.io/badge/Mac%20build-Passing-brightgreen?style=for-the-badge&logo=apple">
     <!--<img alt="Mac build status" src="https://img.shields.io/badge/Mac%20build-Testing-yellow?style=for-the-badge&logo=apple">-->
