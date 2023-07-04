@@ -220,38 +220,44 @@ bool is_pressed(int key_code) {
 
 std::pair<double, double> get_xy() {
 #if _WIN32
+    double letter_x = 0; 
+    double letter_y = 0; 
+    double s_height = horizontal;
+    double s_width = vertical;
+
     HWND handle = GetForegroundWindow();
-if (handle) {
-    RECT windowRect;
-    GetWindowRect(handle, &windowRect);
-    s_width = windowRect.right - windowRect.left;
-    s_height = windowRect.bottom - windowRect.top;
-    letter_x = windowRect.left;
-    letter_y = windowRect.top;
-} else {
-    s_width = horizontal;
-    s_height = vertical;
-    letter_x = 0;
-    letter_y = 0;
-}
-double x, y;
-POINT point;
-if (GetCursorPos(&point)) {
-    double fx = (1.0 * point.x - letter_x) / s_width;
-    if (is_left_handed) {
-        fx = 1 - fx;
+    if (handle) {
+        RECT windowRect;
+        GetWindowRect(handle, &windowRect);
+        s_width = windowRect.right - windowRect.left;
+        s_height = windowRect.bottom - windowRect.top;
+        letter_x = windowRect.left;
+        letter_y = windowRect.top;
+    } else {
+        s_width = horizontal;
+        s_height = vertical;
+        letter_x = 0;
+        letter_y = 0;
     }
-    double fy = (1.0 * point.y - letter_y) / s_height;
-    fx = std::min(fx, 1.0);
-    fx = std::max(fx, 0.0);
-    fy = std::min(fy, 1.0);
-    fy = std::max(fy, 0.0);
-    x = -97 * fx + 44 * fy + 184;
-    y = -76 * fx - 40 * fy + 324;
-} else {
-    x = -1;
-    y = -1;
-}
+
+    double x, y;
+    POINT point;
+    if (GetCursorPos(&point)) {
+        double fx = (1.0 * point.x - letter_x) / s_width;
+        if (is_left_handed) {
+            fx = 1 - fx;
+        }
+        double fy = (1.0 * point.y - letter_y) / s_height;
+        fx = std::min(fx, 1.0);
+        fx = std::max(fx, 0.0);
+        fy = std::min(fy, 1.0);
+        fy = std::max(fy, 0.0);
+        x = -97 * fx + 44 * fy + 184;
+        y = -76 * fx - 40 * fy + 324;
+    } else {
+        x = -1;
+        y = -1;
+    }
 #elif __APPLE__
     double x, y;
     
