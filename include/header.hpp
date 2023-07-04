@@ -1,4 +1,6 @@
-#pragma once
+#ifndef HEADER_CPP
+#define HEADER_CPP
+
 #define BONGO_KEYPRESS_THRESHOLD 0
 #define BASE_WIDTH 612
 #define BASE_HEIGHT 354
@@ -61,27 +63,4 @@ std::vector<int> get_window_size(Json::Value cat_config);
 
 std::pair<double, double> bezier(double ratio, std::vector<double> &points, int length);
 }
-
-/*namespace osu {
-bool init();
-
-void draw(const sf::RenderStates &rstates);
-}; // namespace osu
-
-namespace osuTaiko {
-bool init();
-
-void draw(const sf::RenderStates &rstates);
-}; // namespace taiko
-
-namespace osuCatch {
-bool init();
-
-void draw(const sf::RenderStates &rstates);
-}; // namespace ctb
-
-namespace osuMania {
-bool init();
-
-void draw(const sf::RenderStates &rstates);
-}; // namespace mania*/
+#endif

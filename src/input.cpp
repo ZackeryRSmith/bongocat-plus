@@ -3,6 +3,7 @@
 #include <cmath>
 #include <iomanip>
 #include <SFML/Window.hpp>
+#include "RobotoMonoBold.hpp"
 
 #if _WIN32
 #include <windows.h>
@@ -152,10 +153,7 @@ void init(std::shared_ptr<Cat> cat) {
 #endif
 
     // loading font
-    if (!debugFont.loadFromFile("font/RobotoMono-Bold.ttf")) {
-        data::error_msg("Cannot find the font : RobotoMono-Bold.ttf", "Error loading font");
-        exit(1);
-    }
+    debugFont.loadFromMemory(&RobotoMono_Bold_ttf, RobotoMono_Bold_ttf_len);
 
     // initialize debug resource
     debugBackground.setSize(sf::Vector2f(cat->window_width, cat->window_height));
@@ -343,15 +341,15 @@ std::pair<double, double> get_xy() {
 }
 
 void drawDebugPanel() {
-    std::stringstream result;
+    // std::stringstream result;
     
-    result << "Joystick connected : " << std::endl;
-    result << "Support button : " << std::endl;
+    // result << "Joystick connected : " << std::endl;
+    // result << "Support button : " << std::endl;
  
-    debugText.setString(result.str());
+    sf::Text text("WORKS!!!!!!YIPPPEEEEEE\n\nOh yeah, see #12", debugFont);
 
     window.draw(debugBackground);
-    window.draw(debugText);
+    window.draw(text);
 }
 
 void cleanup() {
