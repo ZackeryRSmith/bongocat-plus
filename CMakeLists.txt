@@ -1,10 +1,21 @@
 cmake_minimum_required(VERSION 3.10)
 project(bongocat)
 
+# Install SFML, this may become optinal in the future
+# as installing and compiling SFML (if already installed
+# on the system) is usless. But this makes windows compiling
+# much easier.
+include(FetchContent)
+FetchContent_Declare(SFML
+    GIT_REPOSITORY https://github.com/SFML/SFML.git
+    GIT_TAG 2.6.x)
+FetchContent_MakeAvailable(SFML)
+
 if(UNIX AND NOT APPLE)
     set(LINUX TRUE)
 endif()
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake_modules/")
 
 set(CMAKE_CXX_STANDARD 17)
@@ -38,11 +49,13 @@ file(GLOB_RECURSE SOURCES src/*.cpp src/custom/*.cpp)
 # Define the executable target
 add_executable(${PROJECT_NAME} ${SOURCES})
 
-# Check for SFML and add it as a dependency
-find_package(SFML 2.5 COMPONENTS graphics window system REQUIRED)
-
 # Link SFML libraries
 target_link_libraries(${PROJECT_NAME} PRIVATE sfml-graphics sfml-window sfml-system)
+
+if (WIN32 AND BUILD_SHARED_LIBS)
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:${PROJECT_NAME}> $<TARGET_FILE_DIR:${PROJECT_NAME}> COMMAND_EXPAND_LISTS)
+endif()
 
 if(UNIX)
   find_package(SDL2 REQUIRED)
@@ -100,3 +113,4 @@ foreach(source ${SOURCES})
 endforeach()
 message("${BoldBlue}Compiler:${BoldWhite} ${CMAKE_CXX_COMPILER_ID} ${BoldYellow}${CMAKE_CXX_COMPILER_VERSION}${ColorReset}")
 
+install(TARGETS ${PROJECT_NAME})
