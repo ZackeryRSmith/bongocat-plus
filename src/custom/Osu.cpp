@@ -109,7 +109,7 @@ class Osu : public Cat {
         double centerleft0 = x_paw_start - 0.7237 * dist / 2;
         double centerleft1 = y_paw_start + 0.69 * dist / 2;
         for (int i = 1; i < oof; i++) {
-            std::vector<double> bez = {(float) x_paw_start, (float) y_paw_start, centerleft0, centerleft1, x, y};
+            std::vector<double> bez = {static_cast<double>(x_paw_start), static_cast<double>(y_paw_start), centerleft0, centerleft1, x, y};
             auto [p0, p1] = helpers::bezier(1.0 * i / oof, bez, 6);
             pss.push_back(p0);
             pss.push_back(p1);
