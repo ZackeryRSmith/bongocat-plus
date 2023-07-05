@@ -71,7 +71,6 @@ void processEvents() {
             case sf::Event::KeyPressed:
                 // reload window
                 if (event.key.code == sf::Keyboard::R && event.key.control) {
-                    window.close();
                     is_reload = true;
                     break;
                 }
