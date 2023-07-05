@@ -16,8 +16,6 @@ std::shared_ptr<Cat> cat;
 // even through reloads
 sf::Vector2i windowPosition;
 
-
-bool is_reload = false;
 bool is_show_input_debug = false;
 
 // used if window is borderless
@@ -71,7 +69,7 @@ void processEvents() {
             case sf::Event::KeyPressed:
                 // reload window
                 if (event.key.code == sf::Keyboard::R && event.key.control) {
-                    is_reload = true;
+                    reloadWindow();
                     break;
                 }
 
@@ -81,6 +79,9 @@ void processEvents() {
                     break;
                 }
 
+            // for mice this system works great, for trackpads however not so much...
+            // As trackpads have acceleration the faster you move you can drag your
+            // mouse off the window.
             case sf::Event::MouseButtonPressed:
                 if (event.mouseButton.button == sf::Mouse::Left && borderless) {
                     grabbed_offset = window.getPosition() - sf::Mouse::getPosition();
@@ -97,9 +98,6 @@ void processEvents() {
                 if (grabbed_window && borderless)
                     window.setPosition(sf::Mouse::getPosition() + grabbed_offset);
                 break;
-
-            default:
-                is_reload = false;
         }
     }
 }
@@ -147,7 +145,7 @@ void monitorConfigFile() {
 
         if (currentModifiedTime != lastModifiedTime) {
             lastModifiedTime = currentModifiedTime;
-            if (auto_reload) is_reload = true;
+            if (auto_reload) reloadWindow();
         }
     }
 }
@@ -173,12 +171,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     while (window.isOpen()) {
         processEvents();
-
-        if (is_reload) {
-            reloadWindow();
-            is_reload = false;  // reset the reload flag
-        }
-
         render();
     }
 
