@@ -26,19 +26,10 @@
 
 extern sf::RenderWindow window;
 
-class Cat {
-public:
-    int window_width{}, window_height{};
-
-    virtual void draw(const sf::RenderStates& rstates) = 0;
-};
-
 namespace data {
 extern Json::Value cfg;
 
 void error_msg(std::string error, std::string title);
-
-std::shared_ptr<Cat> init();
 
 sf::Texture &load_texture(std::string path);
 }; // namespace data

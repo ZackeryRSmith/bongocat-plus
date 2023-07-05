@@ -10,7 +10,7 @@
 #endif
 
 sf::RenderWindow window;
-std::shared_ptr<Cat> cat;
+//std::shared_ptr<Cat> cat;
 
 // used for keeping window consistant
 // even through reloads
@@ -45,7 +45,7 @@ void createWindow() {
 void reloadWindow() {
     input::cleanup();
 
-    cat = data::init();
+    //cat = data::init();
     borderless = data::cfg["decoration"]["borderless"].asBool();
     auto_reload = data::cfg["auto-reload"].asBool();
 
@@ -108,7 +108,8 @@ void processEvents() {
 void render() {
     // translation for artifacts when resize is applied
     sf::Transform transform = sf::Transform();
-    transform.translate(0, cat->window_height - BASE_HEIGHT);
+    //transform.translate(0, cat->window_height - BASE_HEIGHT);
+    transform.translate(0, BASE_HEIGHT);
     sf::RenderStates rstates = sf::RenderStates(transform);
         
     Json::Value background_color = data::cfg["decoration"]["backgroundColor"];
@@ -120,7 +121,7 @@ void render() {
         
     window.clear(sf::Color(red_value, green_value, blue_value, alpha_value));
     
-    cat->draw(rstates);
+    //cat->draw(rstates);
 
     if (is_show_input_debug) {
         input::drawDebugPanel();
@@ -162,12 +163,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 #endif
     std::thread monitorConfigFileThread(monitorConfigFile);
 
-    cat = data::init();
+    //cat = data::init();
     borderless = data::cfg["decoration"]["borderless"].asBool();
     auto_reload = data::cfg["auto-reload"].asBool();
 
     createWindow();
-    input::init(cat);
+    //input::init(cat);
 
     while (window.isOpen()) {
         processEvents();

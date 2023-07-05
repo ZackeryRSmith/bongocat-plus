@@ -47,7 +47,8 @@ static int _XlibErrorHandler(Display *display, XErrorEvent *event) {
 
 int INPUT_KEY_TABLE[TOTAl_INPUT_TABLE_SIZE];
 
-void init(std::shared_ptr<Cat> cat) {
+//void init(std::shared_ptr<Cat> cat) {
+void init() {
     for (int i = 0; i < TOTAl_INPUT_TABLE_SIZE; i++) {
         if (i >= 48 && i <= 57) {           // number
             INPUT_KEY_TABLE[i] = i - 48 + (int)sf::Keyboard::Key::Num0;
@@ -156,8 +157,8 @@ void init(std::shared_ptr<Cat> cat) {
     debugFont.loadFromMemory(&RobotoMono_Bold_ttf, RobotoMono_Bold_ttf_len);
 
     // initialize debug resource
-    debugBackground.setSize(sf::Vector2f(cat->window_width, cat->window_height));
-    debugBackground.setFillColor(sf::Color(0, 0, 0, 128));
+    //debugBackground.setSize(sf::Vector2f(cat->window_width, cat->window_height));
+    //debugBackground.setFillColor(sf::Color(0, 0, 0, 128));
 
     debugText.setFont(debugFont);
     debugText.setCharacterSize(14);

@@ -13,41 +13,6 @@ extern "C" {
 #include <windows.h>
 #endif
 
-/*
- * INCLUDE CUSTOM CAT LOGIC HERE
- */
-#include "custom/Osu.cpp"
-#include "custom/OsuTaiko.cpp"
-#include "custom/OsuCatch.cpp"
-#include "custom/OsuMania.cpp"
-//#include "custom/CatInHat.cpp"
-
-
-/*
- * ADD CUSTOM CAT CLASSES HERE!
- */
-// TODO: Make switch case relate to config.json
-//       so the order of "cats" changes the code up here
-class CatFactory {
-public:
-    static std::shared_ptr<Cat> create(int i) {
-        switch (i) {
-            case 1: return std::make_shared<Osu>();
-                    break;
-            case 2: return std::make_shared<OsuTaiko>();
-                    break;
-            case 3: return std::make_shared<OsuCatch>();
-                    break;
-            case 4: return std::make_shared<OsuMania>();
-                    break;
-            //case 5: return std::make_shared<CatInHat>();
-            //        break;
-            default:
-                throw std::invalid_argument("Could not find that cat");
-        }
-    }
-};
-
 const char *default_conf_string = 
 R"V0G0N({
 })V0G0N";
@@ -135,41 +100,6 @@ bool update(Json::Value &cfg_default, Json::Value &cfg) {
         }
     }
     return is_update;
-}
-
-std::shared_ptr<Cat> init() {
-    while (true) {
-        create_config();
-        std::ifstream cfg_file("config.json", std::ifstream::binary);
-        if (!cfg_file.good()) {
-            break;
-        }
-        std::string cfg_string((std::istreambuf_iterator<char>(cfg_file)), std::istreambuf_iterator<char>()), error;
-        Json::CharReaderBuilder cfg_builder;
-        Json::CharReader *cfg_reader = cfg_builder.newCharReader();
-        Json::Value cfg_read;
-        if (!cfg_reader->parse(cfg_string.c_str(), cfg_string.c_str() + cfg_string.size(), &cfg_read, &error)) {
-            delete cfg_reader;
-            error_msg("Syntax error in config.json:\n" + error, "Error reading configs");
-        } else if (update(cfg, cfg_read)) {
-            delete cfg_reader;
-            break;
-        }
-    }
-
-    img_holder.clear();
-
-    int cat_choice = data::cfg["cat"].asInt();
-
-    std::shared_ptr<Cat> cat;
-    try {
-        cat = CatFactory::create(cat_choice);
-    }
-    catch (std::invalid_argument& e) {
-        std::cout << e.what() << std::endl;
-    }
-
-    return cat;
 }
 
 sf::Texture &load_texture(std::string path) {
