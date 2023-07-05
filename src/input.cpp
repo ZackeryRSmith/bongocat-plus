@@ -310,7 +310,7 @@ std::pair<double, double> get_xy() {
     
     if (xdo_get_mouse_location(xdo, &px, &py, NULL) == 0) {
         Window window_under_cursor;
-        if (xdo_get_window_under_mouse(xdo, &window_under_cursor) == 0) {
+        if (xdo_get_window_at_mouse(xdo, &window_under_cursor) == 0) {
             unsigned int width_ret, height_ret;
             if (xdo_get_window_size(xdo, window_under_cursor, &width_ret, &height_ret) == 0) {
                 s_width = width_ret;
