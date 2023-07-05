@@ -68,5 +68,7 @@
         "offsetX": [0, 11],
         "offsetY": [0, -20],
         "scalar": [1.0, 1.0]
-    }
+    },
+
+    "auto-reload": true
 }
