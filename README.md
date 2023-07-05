@@ -27,8 +27,8 @@ project is still in development :)
     <img alt="Mac build status" src="https://img.shields.io/badge/Mac%20build-Passing-brightgreen?style=for-the-badge&logo=apple">
     <!--<img alt="Mac build status" src="https://img.shields.io/badge/Mac%20build-Testing-yellow?style=for-the-badge&logo=apple">-->
     <!--<img alt="Mac build status" src="https://img.shields.io/badge/Mac%20build-Failing-red?style=for-the-badge&logo=apple">-->
-    <!--<img alt="Linux build status" src="https://img.shields.io/badge/Linux%20build-Passing-green?style=for-the-badge&logo=linux&logoColor=white">-->
-    <img alt="Linux build status" src="https://img.shields.io/badge/Linux%20build-Testing-yellow?style=for-the-badge&logo=linux&logoColor=white">
+    <img alt="Linux build status" src="https://img.shields.io/badge/Linux%20build-Passing-green?style=for-the-badge&logo=linux&logoColor=white">
+    <!--<img alt="Linux build status" src="https://img.shields.io/badge/Linux%20build-Testing-yellow?style=for-the-badge&logo=linux&logoColor=white">-->
     <!--<img alt="Linux build status" src="https://img.shields.io/badge/Linux%20build-Failing-red?style=for-the-badge&logo=linux&logoColor=white">-->
   </p>
 </div>
