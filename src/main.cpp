@@ -1,6 +1,9 @@
 #include "header.hpp"
 #include <iostream>
 #include <memory>
+#include <filesystem>
+#include <chrono>
+#include <thread>
 
 #if _WIN32
     #include <windows.h>
@@ -9,6 +12,11 @@
 sf::RenderWindow window;
 std::shared_ptr<Cat> cat;
 
+// used for keeping window consistant
+// even through reloads
+sf::Vector2i windowPosition;
+
+
 bool is_reload = false;
 bool is_show_input_debug = false;
 
@@ -16,6 +24,9 @@ bool is_show_input_debug = false;
 bool borderless;
 sf::Vector2i grabbed_offset;
 bool grabbed_window = false;
+
+bool auto_reload;
+bool should_exit_monitor = false;
 
 /*****************
  * CREATE WINDOW *
@@ -27,6 +38,7 @@ void createWindow() {
         borderless ? sf::Style::None : sf::Style::Titlebar | sf::Style::Close
     );
     window.setFramerateLimit(MAX_FRAMERATE);
+    window.setPosition(windowPosition);
 }
 
 /*****************
@@ -37,7 +49,9 @@ void reloadWindow() {
 
     cat = data::init();
     borderless = data::cfg["decoration"]["borderless"].asBool();
+    auto_reload = data::cfg["auto-reload"].asBool();
 
+    windowPosition = window.getPosition();
     createWindow();
 
     input::init(cat);
@@ -118,6 +132,27 @@ void render() {
     window.display();
 }
 
+/***********************
+ * MONITOR CONFIG FILE *
+ ***********************/
+void monitorConfigFile() {
+    std::filesystem::path configPath = "config.json";
+    auto lastModifiedTime = std::filesystem::last_write_time(configPath);
+
+    while (!should_exit_monitor) {
+        // sleep for a short duration
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+        // check if the config file has been modified
+        auto currentModifiedTime = std::filesystem::last_write_time(configPath);
+
+        if (currentModifiedTime != lastModifiedTime) {
+            lastModifiedTime = currentModifiedTime;
+            if (auto_reload) is_reload = true;
+        }
+    }
+}
+
 /*************
  * MAIN LOOP *
  *************/
@@ -128,8 +163,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     FreeConsole(); // maybe not the best option because the console is still 
                    // running with the console subsystem, but it does hide the console
 #endif
+    std::thread monitorConfigFileThread(monitorConfigFile);
+
     cat = data::init();
     borderless = data::cfg["decoration"]["borderless"].asBool();
+    auto_reload = data::cfg["auto-reload"].asBool();
 
     createWindow();
     input::init(cat);
@@ -145,6 +183,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         render();
     }
 
+    should_exit_monitor = true;
+    monitorConfigFileThread.join();
     input::cleanup();
     return 0;
 }
