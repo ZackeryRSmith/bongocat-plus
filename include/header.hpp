@@ -35,7 +35,8 @@ sf::Texture &load_texture(std::string path);
 }; // namespace data
 
 namespace input {
-void init(std::shared_ptr<Cat> cat);
+//void init(std::shared_ptr<Cat> cat);
+void init();
 
 bool is_pressed(int key_code);
 

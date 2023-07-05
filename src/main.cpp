@@ -31,7 +31,8 @@ bool should_exit_monitor = false;
  *****************/
 void createWindow() {
     window.create(
-        sf::VideoMode(cat->window_width, cat->window_height),
+        //sf::VideoMode(cat->window_width, cat->window_height),
+        sf::VideoMode(BASE_WIDTH, BASE_HEIGHT),
         "BongoCat+",
         borderless ? sf::Style::None : sf::Style::Titlebar | sf::Style::Close
     );
@@ -52,7 +53,8 @@ void reloadWindow() {
     windowPosition = window.getPosition();
     createWindow();
 
-    input::init(cat);
+    //input::init(cat);
+    input::init();
 }
 
 /******************
@@ -169,6 +171,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     createWindow();
     //input::init(cat);
+    input::init();
 
     while (window.isOpen()) {
         processEvents();
