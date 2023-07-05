@@ -295,15 +295,10 @@ std::pair<double, double> get_xy() {
     }
     CFRelease(windows);
 #elif defined(__unix__) || defined(__unix)
-    double letter_x = 0; 
-    double letter_y = 0; 
+    int x_pos = 0; 
+    int y_pos = 0; 
     double s_height = horizontal;
     double s_width = vertical;
-
-    s_width = horizontal;
-    s_height = vertical;
-    letter_x = 0;
-    letter_y = 0;
 
     double x = 0, y = 0;
     int px = 0, py = 0;
@@ -318,13 +313,22 @@ std::pair<double, double> get_xy() {
             }
         }
 
-        double fx = (1.0 * px - letter_x) / s_width;
+        xdo_get_window_location(xdo, window_under_cursor, &x_pos, &y_pos, NULL);
+
+        /**
+         * Ratio of the mouse position to the window size on the x axis
+         */
+        double fx = (1.0 * px - x_pos) / s_width;
 
         if (is_left_handed) {
             fx = 1 - fx;
         }
 
-        double fy = (1.0 * py - letter_y) / s_height;
+
+        /**
+         * Ratio of the mouse position to the window size on the y axis
+         */
+        double fy = (1.0 * py - y_pos) / s_height;
 
         fx = std::min(fx, 1.0);
         fx = std::max(fx, 0.0);
@@ -332,6 +336,9 @@ std::pair<double, double> get_xy() {
         fy = std::min(fy, 1.0);
         fy = std::max(fy, 0.0);
 
+        /**
+         * Magic numbers to position the mouse cursor on the mouse pad correctly
+         */
         x = -97 * fx + 44 * fy + 184;
         y = -76 * fx - 40 * fy + 324;
     }
