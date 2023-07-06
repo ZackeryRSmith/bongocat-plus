@@ -1,27 +1,22 @@
 cmake_minimum_required(VERSION 3.10)
 project(bongocat)
 
-# Install SFML, this may become optinal in the future
-# as installing and compiling SFML (if already installed
-# on the system) is usless. But this makes windows compiling
-# much easier.
-include(FetchContent)
-FetchContent_Declare(SFML
-    GIT_REPOSITORY https://github.com/SFML/SFML.git
-    GIT_TAG 2.6.x)
-FetchContent_MakeAvailable(SFML)
-
-if(UNIX AND NOT APPLE)
-    set(LINUX TRUE)
-endif()
-
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake_modules/")
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+include(FetchContent)
 
-if(NOT WIN32)
+# allow easy differentiation between OS'
+if(UNIX AND NOT APPLE)
+    set(LINUX TRUE)
+endif()
+
+#####################
+# *NIX TEXT STYLING #
+#####################
+if(NOT WIN32 OR FORCE_ANSI STREQUAL True) # force ANSI regardless of OS with -DFORCE_ANSI=True
   string(ASCII 27 Esc)
   set(ColorReset  "${Esc}[m")
   set(ColorBold   "${Esc}[1m")
@@ -40,18 +35,92 @@ if(NOT WIN32)
   set(BoldCyan    "${Esc}[1;36m")
   set(BoldWhite   "${Esc}[1;37m")
 endif()
+#####################
 
-include_directories(include ${CMAKE_SOURCE_DIR}/include/json)
+##################
+# CUSTOM LOGGING #
+##################
+function(log)
+  list(GET ARGV 0 MessageType)
+  if(MessageType STREQUAL FATAL_ERROR OR MessageType STREQUAL SEND_ERROR)
+    list(REMOVE_AT ARGV 0)
+    message("[${BoldRed}${MessageType}${ColorReset}] ${Red}${ARGV}${ColorReset}")
+  elseif(MessageType STREQUAL WARNING)
+    list(REMOVE_AT ARGV 0)
+    message("[${BoldYellow}${MessageType}${ColorReset}] ${Yellow}${ARGV}${ColorReset}")
+  elseif(MessageType STREQUAL AUTHOR_WARNING)
+    list(REMOVE_AT ARGV 0)
+    message("[${BoldCyan}${MessageType}${ColorReset}] ${Cyan}${ARGV}${ColorReset}")
+  elseif(MessageType STREQUAL STATUS)
+    list(REMOVE_AT ARGV 0)
+    message("[${BoldGreen}${MessageType}${ColorReset}] ${Green}${ARGV}${ColorReset}")
+  else()
+    message("${ARGV}")
+  endif()
+endfunction()
+##################
 
-# Source files
-file(GLOB_RECURSE SOURCES src/*.cpp src/custom/*.cpp)
+include_directories(
+  include                                 # expose header.hpp
+  ${CMAKE_SOURCE_DIR}/include/json        # for parsing config.json
+  ${CMAKE_SOURCE_DIR}/build/_deps/lua-src # for cat scripts
+)
 
-# Define the executable target
+# source files (anything under ./src/)
+file(GLOB_RECURSE SOURCES src/*.cpp)
+
+# define the executable target
 add_executable(${PROJECT_NAME} ${SOURCES})
 
-# Link SFML libraries
-target_link_libraries(${PROJECT_NAME} PRIVATE sfml-graphics sfml-window sfml-system)
+#################################
+# INSTALL LUA (for cat scripts) #
+#################################
+log(STATUS "Installing LUA")
+FetchContent_Declare(
+  lua
+  GIT_REPOSITORY "https://github.com/lua/lua"
+  GIT_TAG master
+)
+FetchContent_MakeAvailable(lua)
+log(STATUS "Installed LUA")
 
+########
+# SFML #
+########
+#------------------------#
+# INSTALL SFML (windows) #
+#------------------------#
+if (WIN32)
+  log(STATUS "Installing SFML")
+  FetchContent_Declare(
+    SFML
+    GIT_REPOSITORY https://github.com/SFML/SFML.git
+    GIT_TAG 2.6.x
+  )
+  FetchContent_MakeAvailable(SFML)
+  log(STATUS "Installed SFML")
+
+  # don't build these as they're unused
+  set(SFML_BUILD_AUDIO FALSE)
+  set(SFML_BUILD_NETWORK FALSE)
+
+#----------------------------#
+# FIND SFML (MacOSX & Linux) #
+#----------------------------#
+else()
+  find_package(SFML 2.5 COMPONENTS graphics window system REQUIRED)
+endif()
+
+# link SFML
+log(STATUS "Linking SFML")
+target_link_libraries(${PROJECT_NAME} PRIVATE sfml-graphics sfml-window sfml-system)
+log(STATUS "Linked SFML")
+
+#--------------------------------------------#
+# Ensure that the runtime DLLs are copied to # 
+# the same directory as the executable when  #
+#            building on Windows.            #
+#--------------------------------------------#
 if (WIN32 AND BUILD_SHARED_LIBS)
     add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:${PROJECT_NAME}> $<TARGET_FILE_DIR:${PROJECT_NAME}> COMMAND_EXPAND_LISTS)
@@ -108,9 +177,6 @@ message("${BoldGreen}Sources:${ColorReset}")
 foreach(source ${SOURCES})
     string(REPLACE "bongocat-plus" "${BoldWhite}bongo${BoldMagenta}cat${ColorReset}-${BoldYellow}plus${ColorReset}" modified_source ${source})
     string(REPLACE "src" "${BoldGreen}src${ColorReset}" modified_source ${modified_source})
-    string(REPLACE "custom" "${BoldCyan}custom${ColorReset}" modified_source ${modified_source})
     message("  [${BoldCyan}*${ColorReset}] ${modified_source}")
 endforeach()
 message("${BoldBlue}Compiler:${BoldWhite} ${CMAKE_CXX_COMPILER_ID} ${BoldYellow}${CMAKE_CXX_COMPILER_VERSION}${ColorReset}")
-
-install(TARGETS ${PROJECT_NAME})
