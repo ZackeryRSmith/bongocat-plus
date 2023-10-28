@@ -49,7 +49,12 @@ function BongoWindow.processEvents() end
 
 function BongoWindow.close() end
 
--- these are functions from SFML directly bound to BongoWindow
+-- ========================================================================
+-- BongoSprite API Stubs
+-- ========================================================================
+BongoSprite = BongoSprite or {}
+
+function BongoSprite.loadFromFile(filename) end
 
 -- ========================================================================
 -- SFML (Sfml namespace) API Stubs
