@@ -3,16 +3,19 @@
 #include <global.hpp>
 #include <lua.hpp>  // bongo lua
 #include <sfml.hpp> // sfml lua bindings
+#include <sprite.hpp>
 #include <window.hpp>
 
 sf::RenderWindow mainWindow;
+sf::RenderStates mainRenderStates; // may cause artifacts when switching cats
 lua_State *LuaState;
 
 int main() {
     BongoLua::initializeLua();
 
-    BongoWindow::bindToLua();
     BongoSfml::bindToLua();
+    BongoWindow::bindToLua();
+    BongoSprite::bindToLua();
 
     BongoLua::executeScript("src/test.lua");
     BongoLua::closeLua();
