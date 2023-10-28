@@ -1,6 +1,5 @@
 #ifndef BONGO_CAT_SFML_HPP
 #define BONGO_CAT_SFML_HPP
-#include "LuaBridge.h"
 #include <global.hpp>
 
 /*
@@ -161,7 +160,8 @@ inline void bindToLua() {
         //-------------------------------------------------------------------
         // sf::Sprite
         //-------------------------------------------------------------------
-        .deriveClass<sf::Sprite, sf::Drawable>("Sprite")
+        //.deriveClass<sf::Sprite, sf::Drawable>("Sprite")
+        .beginClass<sf::Sprite>("Sprite")
         .addConstructor<void(), void(const sf::Texture &),
                         void(const sf::Texture &, const sf::IntRect &)>()
         .addFunction("setTexture", &sf::Sprite::setTexture)
