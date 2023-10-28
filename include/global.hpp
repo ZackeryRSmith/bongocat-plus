@@ -18,8 +18,9 @@ using Vec2iRef = const sf::Vector2i &;
 #define BASE_WIDTH 612
 #define BASE_HEIGHT 354
 
-// the _mainWindow and _LuaState symbol are defined in main.cpp
+// these symbols are defined in main.cpp
 extern sf::RenderWindow mainWindow;
+extern sf::RenderStates mainRenderStates;
 extern lua_State *LuaState;
 
 #endif
