@@ -1,15 +1,21 @@
 cmake_minimum_required(VERSION 3.10)
 project(bongocat)
 
+# setup cmake directories to keep root clean
+set(CMAKE_CACHEFILE_DIR "${CMAKE_SOURCE_DIR}/CMakeFiles")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake_modules/")
+set(CMAKE_BINARY_DIR "${CMAKE_SOURCE_DIR}/CMakeFiles")
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 
 # for my clangd users out there
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 include(FetchContent)
+set(FETCHCONTENT_BASE_DIR ${CMAKE_SOURCE_DIR}/CMakeFiles/_deps)
 
 # allow easy differentiation between OS'
 if(UNIX AND NOT APPLE)
@@ -72,7 +78,7 @@ endfunction()
 include_directories(
   include # expose header.hpp
   ${CMAKE_SOURCE_DIR}/include/json # for parsing config.json
-  ${CMAKE_SOURCE_DIR}/build/_deps/luabridge3-src/Distribution/LuaBridge)
+  ${CMAKE_SOURCE_DIR}/CMakeFiles/_deps/luabridge3-src/Distribution/LuaBridge)
 
 # source files (anything under ./src/)
 file(GLOB_RECURSE SOURCES src/*.cpp)
@@ -150,12 +156,15 @@ if(UNIX)
   include_directories(${SDL2_INCLUDE_DIR})
   target_link_libraries(${PROJECT_NAME} PRIVATE ${SDL2_LIBRARIES})
 
-  message(
-    "\n${BoldWhite}___| ${BoldBlue}*${ColorReset}NIX SPECIFIC'S ${BoldWhite}|___"
+  execute_process(
+    COMMAND
+      ${CMAKE_COMMAND} -E echo_append
+      "\n${BoldWhite}___| ${BoldBlue}*${ColorReset}NIX SPECIFIC'S ${BoldWhite}|___${ColorReset} : "
   )
-  message("${BoldMagenta}SDL2 DIR:${ColorReset} ${SDL2_INCLUDE_DIR}")
 
   if(LINUX)
+    message("${BoldCyan}LINUX${ColorReset}")
+
     find_package(X11 REQUIRED)
     include_directories(${X11_INCLUDE_DIR})
     target_link_libraries(${PROJECT_NAME} PRIVATE ${X11_LIBRARIES})
@@ -175,21 +184,30 @@ if(UNIX)
   endif()
 
   if(APPLE)
-    find_library(COREGRAPHICS_LIBRARY CoreGraphics)
-    if(COREGRAPHICS_LIBRARY)
-      target_link_libraries(${PROJECT_NAME} PRIVATE ${COREGRAPHICS_LIBRARY})
+    message("${BoldWhite}APPLE${ColorReset}")
+
+    find_library(COREGRAPHICS_LIB CoreGraphics)
+    if(COREGRAPHICS_LIB)
+      target_link_libraries(${PROJECT_NAME} PRIVATE ${COREGRAPHICS_LIB})
     endif()
 
-    find_library(COREFOUNDATION_LIBRARY CoreFoundation)
+    find_library(COREFOUNDATION_LIB CoreFoundation)
+    if(COREFOUNDATION_LIB)
+      target_link_libraries(${PROJECT_NAME} PRIVATE ${COREFOUNDATION_LIB})
+    endif()
+
+    find_library(APPLICATIONSERVICES_LIB ApplicationServices)
     if(COREFOUNDATION_LIBRARY)
-      target_link_libraries(${PROJECT_NAME} PRIVATE ${COREFOUNDATION_LIBRARY})
+      target_link_libraries(${PROJECT_NAME} PRIVATE ${APPLICATIONSERVICES_LIB})
     endif()
 
+    message("${BoldMagenta}COREGRAPHICS DIR:${ColorReset} ${COREGRAPHICS_LIB}")
     message(
-      "${BoldMagenta}COREGRAPHICS DIR:${ColorReset} ${COREGRAPHICS_LIBRARY}")
+      "${BoldMagenta}COREFOUNDATION DIR:${ColorReset} ${COREFOUNDATION_LIB}")
     message(
-      "${BoldMagenta}COREFOUNDATION DIR:${ColorReset} ${COREFOUNDATION_LIBRARY}"
+      "${BoldMagenta}APPLICATIONSERVICES DIR:${ColorReset} ${APPLICATIONSERVICES_LIB}"
     )
+
   endif()
 
   message("${BoldWhite}-------------------------${ColorReset}\n")
