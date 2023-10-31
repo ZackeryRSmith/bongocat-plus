@@ -1,14 +1,28 @@
 #include <global.hpp>
+#include <sprite.hpp>
 #include <window.hpp>
 
 sf::Vector2i grabbed_offset;
 bool grabbed_window = false;
 
+unsigned int rstate_shift_width = 0;
+unsigned int rstate_shift_height = 0;
+
 //============================================================================
 // CREATE
 //============================================================================
+void BongoWindow::create(UIntRef width, UIntRef height) {
+    BongoWindow::create(width, height, sf::Style::Titlebar | sf::Style::Close);
+}
+
 void BongoWindow::create(UIntRef width, UIntRef height, UInt32Ref style) {
     mainWindow.create(sf::VideoMode(width, height), "BongoCat+", style);
+    // check if the window being created is bigger then the screen
+    if (mainWindow.getSize().x < width || mainWindow.getSize().y < height)
+        std::cerr << "BongoCat+ [WARN]: Cannot spawn window of size (" << width
+                  << ", " << height << "), window has been sized down to ("
+                  << mainWindow.getSize().x << ", " << mainWindow.getSize().y
+                  << ")";
     mainWindow.setFramerateLimit(MAX_FRAMERATE);
 }
 
@@ -22,8 +36,7 @@ void BongoWindow::create(UIntRef width, UIntRef height, UInt32Ref style,
 // REFRESH
 //============================================================================
 void BongoWindow::refresh() {
-    BongoWindow::create(mainWindow.getSize().x, mainWindow.getSize().y,
-                        sf::Style::Default);
+    BongoWindow::create(mainWindow.getSize().x, mainWindow.getSize().y);
 }
 
 void BongoWindow::refresh(UIntRef width, UIntRef height, UInt32Ref style) {
@@ -103,8 +116,22 @@ void BongoWindow::clear(const sf::Color &color) { mainWindow.clear(color); }
 //============================================================================
 // DRAW
 //============================================================================
+// TODO: this function is slow and consuming. Please fix this, it's called a lot
+void BongoWindow::draw(sf::Sprite &sprite) {
+    const sf::FloatRect sprite_rect = sprite.getLocalBounds();
+
+    if (sprite_rect.height > rstate_shift_height)
+        rstate_shift_height = sprite_rect.height;
+
+    sf::Transform transform = sf::Transform();
+    transform.translate(0, mainWindow.getSize().y - BASE_HEIGHT);
+    sf::RenderStates rstates = sf::RenderStates(transform);
+
+    mainWindow.draw(sprite, mainRenderStates);
+}
+
 void BongoWindow::draw(const sf::Drawable &drawable) {
-    mainWindow.draw(drawable);
+    mainWindow.draw(drawable, mainRenderStates);
 }
 
 //============================================================================
@@ -115,31 +142,31 @@ void BongoWindow::display() { mainWindow.display(); }
 //============================================================================
 // BIND TO LUA
 //============================================================================
-// no need to ever bind BongoWindow to lua, but here if you must
 void BongoWindow::bindToLua() {
-    void (*createFunc1)(UIntRef, UIntRef, UInt32Ref) = BongoWindow::create;
-    void (*createFunc2)(UIntRef, UIntRef, UInt32Ref, Vec2iRef) =
-        BongoWindow::create;
-
-    void (*refreshFunc1)() = BongoWindow::refresh;
-    void (*refreshFunc2)(UIntRef, UIntRef, UInt32Ref) = BongoWindow::refresh;
-    void (*refreshFunc3)(UIntRef, UIntRef, UInt32Ref, Vec2iRef) =
-        BongoWindow::refresh;
-
     luabridge::getGlobalNamespace(LuaState)
         .beginNamespace("BongoWindow")
         // create functions
-        .addFunction("create", createFunc1)
-        .addFunction("createWithPosition", createFunc2)
+        .addFunction(
+            "create",
+            luabridge::overload<UIntRef, UIntRef>(&BongoWindow::create),
+            luabridge::overload<UIntRef, UIntRef, UInt32Ref>(
+                &BongoWindow::create),
+            luabridge::overload<UIntRef, UIntRef, UInt32Ref, Vec2iRef>(
+                &BongoWindow::create))
         // refresh functions
-        .addFunction("refresh", refreshFunc1)
-        .addFunction("refreshWithSizeAndStyle", refreshFunc2)
-        .addFunction("refreshWithPosition", refreshFunc3)
+        .addFunction("refresh", luabridge::overload<>(&BongoWindow::refresh),
+                     luabridge::overload<UIntRef, UIntRef, UInt32Ref>(
+                         &BongoWindow::refresh),
+                     luabridge::overload<UIntRef, UIntRef, UInt32Ref, Vec2iRef>(
+                         &BongoWindow::refresh))
         // rendering functions
         .addFunction(
             "clear", luabridge::overload<>(&BongoWindow::clear),
             luabridge::overload<const sf::Color &>(&BongoWindow::clear))
-        .addFunction("draw", &BongoWindow::draw)
+        .addFunction(
+            "draw",
+            luabridge::overload<const sf::Drawable &>(&BongoWindow::draw),
+            luabridge::overload<sf::Sprite &>(&BongoWindow::draw))
         .addFunction("display", &BongoWindow::display)
         // other functions
         .addFunction("processEvents", &BongoWindow::processEvents)
