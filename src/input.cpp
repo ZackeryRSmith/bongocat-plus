@@ -3,6 +3,8 @@
 
 int INPUT_KEY_TABLE[TOTAl_INPUT_TABLE_SIZE];
 
+std::map<int, bool> keyState;
+
 sf::Keyboard::Key ascii_to_key(int key_code) {
     if (key_code < 0 || key_code >= TOTAl_INPUT_TABLE_SIZE) {
         // out of range
@@ -116,6 +118,34 @@ bool BongoInput::is_pressed(int key_code) {
 bool BongoInput::is_pressed(char c) { return BongoInput::is_pressed((int)c); }
 
 //============================================================================
+// ON PRESSED
+//============================================================================
+bool BongoInput::on_pressed(int key_code) {
+    bool isCurrentlyPressed = BongoInput::is_pressed(key_code);
+    bool wasPressedLastFrame = keyState[key_code];
+
+    keyState[key_code] = isCurrentlyPressed;
+
+    // if the key is currently pressed and was not pressed last frame
+    return isCurrentlyPressed && !wasPressedLastFrame;
+}
+bool BongoInput::on_pressed(char c) { return BongoInput::on_pressed((int)c); }
+
+//============================================================================
+// ON RELEASED
+//============================================================================
+bool BongoInput::on_released(int key_code) {
+    bool isCurrentlyPressed = BongoInput::is_pressed(key_code);
+    bool wasPressedLastFrame = keyState[key_code];
+
+    keyState[key_code] = isCurrentlyPressed;
+
+    // if the key was pressed last frame and is not currently pressed
+    return wasPressedLastFrame && !isCurrentlyPressed;
+}
+bool BongoInput::on_released(char c) { return BongoInput::on_released((int)c); }
+
+//============================================================================
 // BIND TO LUA
 //============================================================================
 void BongoInput::bindToLua() {
@@ -123,6 +153,12 @@ void BongoInput::bindToLua() {
         .addFunction("is_pressed",
                      luabridge::overload<int>(&BongoInput::is_pressed),
                      luabridge::overload<char>(&BongoInput::is_pressed))
+        .addFunction("on_pressed",
+                     luabridge::overload<int>(&BongoInput::on_pressed),
+                     luabridge::overload<char>(&BongoInput::on_pressed))
+        .addFunction("on_released",
+                     luabridge::overload<int>(&BongoInput::on_released),
+                     luabridge::overload<char>(&BongoInput::on_released))
         .beginNamespace("BongoInput")
         .beginNamespace("Key")
         // INFO: based off http://www.foreui.com/articles/Key_Code_Table.htm

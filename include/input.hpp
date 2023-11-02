@@ -5,6 +5,9 @@
 #define TOTAl_INPUT_TABLE_SIZE 256
 extern int INPUT_KEY_TABLE[TOTAl_INPUT_TABLE_SIZE];
 
+// used in on_pressed & on_released
+extern std::map<int, bool> keyState;
+
 sf::Keyboard::Key ascii_to_key(int key_code);
 bool is_pressed_fallback(int key_code);
 
@@ -18,6 +21,16 @@ void init();
 //============================================================================
 bool is_pressed(int key_code);
 bool is_pressed(char c);
+//============================================================================
+// ON PRESSED
+//============================================================================
+bool on_pressed(int key_code);
+bool on_pressed(char c);
+//============================================================================
+// ON RELEASED
+//============================================================================
+bool on_released(int key_code);
+bool on_released(char c);
 //============================================================================
 //  BIND TO LUA
 //============================================================================

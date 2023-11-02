@@ -42,6 +42,7 @@ function BongoWindow.clear() end
 function BongoWindow.clear(color) end
 
 function BongoWindow.draw(drawable) end
+function BongoWindow.drawif(drawable, bool) end
 
 function BongoWindow.display() end
 
@@ -62,6 +63,12 @@ function BongoSprite.loadFromFile(filename) end
 
 function is_pressed(int) end
 function is_pressed(char) end
+
+function on_pressed(int) end
+function on_pressed(char) end
+
+function on_released(int) end
+function on_released(char) end
 
 BongoInput = {}
 BongoInput.Key = {
