@@ -1,5 +1,28 @@
 #ifndef BONGO_CAT_GLOBAL_HPP
 #define BONGO_CAT_GLOBAL_HPP
+
+#if defined(_WIN32) || defined(WIN32) || defined(__CYGWIN__)
+#define WINDOWS
+#include <windows.h>
+#elif defined(__APPLE__) || defined(__MACH__)
+#define APPLE
+#include <ApplicationServices/ApplicationServices.h>
+#include <CoreFoundation/CoreFoundation.h>
+#include <CoreGraphics/CoreGraphics.h>
+#elif defined(unix) || defined(__unix__) || defined(__unix) ||                 \
+    defined(__linux__)
+#define LINUX
+#include <X11/Xlib.h>
+#include <X11/extensions/Xrandr.h>
+#include <X11/keysym.h>
+
+extern "C" {
+#include <xdo.h>
+}
+#else
+#define UNKNOWN
+#endif
+
 extern "C" {
 #include "lauxlib.h"
 #include "lua.h"
