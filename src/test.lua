@@ -21,6 +21,11 @@ while BongoWindow.processEvents() == 0 do
 	-- draw the sprite to the window
 	BongoWindow.draw(mousebg)
 
+	if is_pressed(BongoInput.Key.question_mark) then
+		BongoWindow.draw(smoke)
+		print("it is")
+	end
+
 	-- display the window's contents
 	BongoWindow.display()
 end

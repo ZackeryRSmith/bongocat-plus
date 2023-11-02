@@ -1,3 +1,4 @@
+#include "input.hpp"
 #include <iostream>
 
 #include <global.hpp>
@@ -13,9 +14,12 @@ lua_State *LuaState;
 int main() {
     BongoLua::initializeLua();
 
+    BongoInput::init();
+
     BongoSfml::bindToLua();
     BongoWindow::bindToLua();
     BongoSprite::bindToLua();
+    BongoInput::bindToLua();
 
     BongoLua::executeScript("src/test.lua");
     BongoLua::closeLua();
