@@ -135,6 +135,18 @@ void BongoWindow::draw(const sf::Drawable &drawable) {
 }
 
 //============================================================================
+// DRAW IF
+//============================================================================
+void BongoWindow::drawif(sf::Sprite &sprite, bool condition) {
+    if (condition)
+        BongoWindow::draw(sprite);
+}
+void BongoWindow::drawif(const sf::Drawable &drawable, bool condition) {
+    if (condition)
+        BongoWindow::draw(drawable);
+}
+
+//============================================================================
 // DISPLAY
 //============================================================================
 void BongoWindow::display() { mainWindow.display(); }
@@ -163,10 +175,16 @@ void BongoWindow::bindToLua() {
         .addFunction(
             "clear", luabridge::overload<>(&BongoWindow::clear),
             luabridge::overload<const sf::Color &>(&BongoWindow::clear))
+        // drawing functions
         .addFunction(
             "draw",
             luabridge::overload<const sf::Drawable &>(&BongoWindow::draw),
             luabridge::overload<sf::Sprite &>(&BongoWindow::draw))
+        .addFunction(
+            "drawif",
+            luabridge::overload<const sf::Drawable &, bool>(
+                &BongoWindow::drawif),
+            luabridge::overload<sf::Sprite &, bool>(&BongoWindow::drawif))
         .addFunction("display", &BongoWindow::display)
         // other functions
         .addFunction("processEvents", &BongoWindow::processEvents)

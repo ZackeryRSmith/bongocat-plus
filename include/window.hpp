@@ -48,6 +48,12 @@ void draw(sf::Sprite &sprite);
 void draw(const sf::Drawable &drawable);
 
 //============================================================================
+// DRAW IF
+//============================================================================
+void drawif(sf::Sprite &sprite, bool condition);
+void drawif(const sf::Drawable &drawable, bool condition);
+
+//============================================================================
 // DISPLAY
 //============================================================================
 void display();
