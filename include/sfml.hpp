@@ -224,46 +224,6 @@ inline void bindToLua() {
         //-------------------------------------------------------------------
         .beginClass<sf::String>("String")
         .endClass() // sf::String
-        //-------------------------------------------------------------------
-        // sf::RenderWindow == LEFT INCOMPLETE, USE BONGO WINDOW
-        //-------------------------------------------------------------------
-        /*.beginClass<sf::RenderWindow>("RenderWindow")
-        .addConstructor<void(),
-                        void(sf::VideoMode, const sf::String, sf::Uint32,
-                             const sf::ContextSettings),
-                        void(sf::WindowHandle, const sf::ContextSettings)>()
-        .addFunction("getSize", &sf::RenderWindow::getSize)
-        .addFunction("isSrgb", &sf::RenderWindow::isSrgb)
-        .addFunction("setActive", &sf::RenderWindow::setActive)
-        //.addFunction("capture", &sf::RenderWindow::capture) // capture is dep
-        .addFunction("create",
-                     static_cast<void (sf::RenderWindow::*)(
-                         sf::VideoMode, const sf::String &, sf::Uint32)>(
-                         &sf::RenderWindow::create))
-        .addFunction("create", static_cast<void (sf::RenderWindow::*)(
-                                   sf::VideoMode, const sf::String &,
-                                   sf::Uint32, const sf::ContextSettings &)>(
-                                   &sf::RenderWindow::create))
-        .addFunction("create",
-                     static_cast<void (sf::RenderWindow::*)(sf::WindowHandle)>(
-                         &sf::RenderWindow::create))
-        .addFunction("create",
-                     static_cast<void (sf::RenderWindow::*)(
-                         sf::WindowHandle, const sf::ContextSettings &)>(
-                         &sf::RenderWindow::create))
-        .addFunction("close", &sf::RenderWindow::close)
-        .addFunction("getSettings", &sf::RenderWindow::getSettings)
-        .addFunction("setVerticalSyncEnabled",
-                     &sf::RenderWindow::setVerticalSyncEnabled)
-        .addFunction("setFramerateLimit", &sf::RenderWindow::setFramerateLimit)
-        .addFunction("setActive", &sf::RenderWindow::setActive)
-        .addFunction("display", &sf::RenderWindow::display)
-        .addFunction("isOpen", &sf::RenderWindow::isOpen)
-        .addFunction("pollEvent", &sf::RenderWindow::pollEvent)
-        // add the rest ...
-        //.addFunction("", &sf::RenderWindow::)
-        .endClass() // sf::RenderWindow
-        */
 
         .endNamespace(); // Sfml
 }
