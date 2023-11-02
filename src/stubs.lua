@@ -57,6 +57,131 @@ BongoSprite = BongoSprite or {}
 function BongoSprite.loadFromFile(filename) end
 
 -- ========================================================================
+-- BongoInput API Stubs
+-- ========================================================================
+
+function is_pressed(int) end
+function is_pressed(char) end
+
+BongoInput = {}
+BongoInput.Key = {
+	-- INFO: based off http://www.foreui.com/articles/Key_Code_Table.htm
+	-- NOTE: 0 - 49
+	backspace = 8,
+	tab = 9,
+	enter = 13,
+	shift = 16,
+	ctrl = 27,
+	alt = 18,
+	pause = 19,
+	caps_lock = 20,
+	escape = 27,
+	page_up = 33,
+	page_down = 34,
+	-- NOTE: ommited as `end` is a lua keyword
+	--end = 35,
+	home = 36,
+	left = 37,
+	up = 38,
+	right = 39,
+	down = 40,
+	insert = 45,
+	delete = 46,
+	zero = 48,
+	one = 49,
+	-- NOTE: 50 - 99
+	two = 50,
+	three = 51,
+	four = 52,
+	five = 53,
+	six = 54,
+	seven = 55,
+	eight = 56,
+	nine = 57,
+	semicolon = 59,
+	colon = 16 | 59,
+	equals = 61,
+	plus = 16 | 61,
+	a = 65,
+	b = 66,
+	c = 67,
+	d = 68,
+	e = 69,
+	f = 70,
+	g = 71,
+	h = 72,
+	i = 73,
+	j = 74,
+	k = 75,
+	l = 76,
+	m = 77,
+	n = 78,
+	o = 79,
+	p = 80,
+	q = 81,
+	r = 82,
+	s = 83,
+	t = 84,
+	u = 85,
+	v = 86,
+	w = 87,
+	x = 88,
+	y = 89,
+	z = 90,
+	power = 91,
+	right_click = 93,
+	zero_numlock = 96,
+	one_numlock = 97,
+	two_numlock = 98,
+	three_numlock = 99,
+	-- NOTE: 100 - 149
+	four_numlock = 100,
+	five_numlock = 101,
+	six_numlock = 102,
+	seven_numlock = 103,
+	eight_numlock = 104,
+	nine_numlock = 105,
+	asterix_numlock = 106,
+	plus_numlock = 107,
+	minus_numlock = 109,
+	period_numlock = 110,
+	slash_numlock = 111,
+	F1 = 112,
+	F2 = 113,
+	F3 = 114,
+	F4 = 115,
+	F5 = 116,
+	F6 = 117,
+	F7 = 118,
+	F8 = 119,
+	F9 = 120,
+	F10 = 121,
+	F11 = 122,
+	F12 = 123,
+	num_lock = 144,
+	scroll_lock = 145,
+	-- NOTE: 150 - 199
+	comma = 188,
+	less_then = 16 | 188,
+	period = 190,
+	greater_then = 16 | 190,
+	slash = 191,
+	question_mark = 16 | 191,
+	tick = 192,
+	tilde = 16 | 192,
+	-- NOTE: 200 - 249
+	-- GET NAMES FOR THESE
+	lbracket = 219,
+	lbrace = 16 | 219,
+	backslash = 220,
+	pipe = 16 | 220,
+	rbracket = 221,
+	rbrace = 16 | 221,
+	single_quote = 222,
+	double_quote = 16 | 222,
+}
+
+-- ========================================================================
 -- SFML (Sfml namespace) API Stubs
 -- ========================================================================
 
