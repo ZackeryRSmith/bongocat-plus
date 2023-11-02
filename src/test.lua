@@ -11,6 +11,9 @@ local smoke = BongoSprite.loadFromFile("cats/osu/smoke.png")
 local mousebg = BongoSprite.loadFromFile("cats/osu/mousebg.png")
 local testbg = BongoSprite.loadFromFile("cats/osu/temp.png")
 
+-- states
+local smoke_state = false
+
 -- create a window
 BongoWindow.create(612, 354)
 
@@ -18,13 +21,16 @@ while BongoWindow.processEvents() == 0 do
 	-- clear the window with a color (optional but recommended)
 	BongoWindow.clear(Sfml.Color.White)
 
+	-- smoke logic
+	if on_pressed(BongoInput.Key.s) then
+		smoke_state = not smoke_state
+	end
+
 	-- draw the sprite to the window
 	BongoWindow.draw(mousebg)
 
-	if is_pressed(BongoInput.Key.question_mark) then
-		BongoWindow.draw(smoke)
-		print("it is")
-	end
+	-- draw smoke if smoke_state is true
+	BongoWindow.drawif(smoke, smoke_state)
 
 	-- display the window's contents
 	BongoWindow.display()
