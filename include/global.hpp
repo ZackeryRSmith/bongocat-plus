@@ -29,8 +29,13 @@ extern "C" {
 #include "lualib.h"
 }
 
-#include <LuaBridge.h>
+#include <LuaBridge/LuaBridge.h>
+
+#include <LuaBridge/Array.h>
 #include <SFML/Graphics.hpp>
+
+// used for std::clamp in input.cpp
+#include <algorithm>
 
 // types
 using UIntRef = const unsigned int &;
