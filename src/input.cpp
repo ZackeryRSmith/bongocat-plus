@@ -99,7 +99,7 @@ void BongoInput::init() {
 //============================================================================
 // IS PRESSED
 //============================================================================
-bool BongoInput::is_pressed(int key_code) {
+bool BongoInput::isPressed(int key_code) {
     if (key_code == 16) {
         return sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) ||
                sf::Keyboard::isKeyPressed(sf::Keyboard::RShift);
@@ -115,13 +115,13 @@ bool BongoInput::is_pressed(int key_code) {
         }
     }
 }
-bool BongoInput::is_pressed(char c) { return BongoInput::is_pressed((int)c); }
+bool BongoInput::isPressed(char c) { return BongoInput::isPressed((int)c); }
 
 //============================================================================
 // ON PRESSED
 //============================================================================
-bool BongoInput::on_pressed(int key_code) {
-    bool isCurrentlyPressed = BongoInput::is_pressed(key_code);
+bool BongoInput::onPressed(int key_code) {
+    bool isCurrentlyPressed = BongoInput::isPressed(key_code);
     bool wasPressedLastFrame = keyState[key_code];
 
     keyState[key_code] = isCurrentlyPressed;
@@ -129,13 +129,13 @@ bool BongoInput::on_pressed(int key_code) {
     // if the key is currently pressed and was not pressed last frame
     return isCurrentlyPressed && !wasPressedLastFrame;
 }
-bool BongoInput::on_pressed(char c) { return BongoInput::on_pressed((int)c); }
+bool BongoInput::onPressed(char c) { return BongoInput::onPressed((int)c); }
 
 //============================================================================
 // ON RELEASED
 //============================================================================
-bool BongoInput::on_released(int key_code) {
-    bool isCurrentlyPressed = BongoInput::is_pressed(key_code);
+bool BongoInput::onReleased(int key_code) {
+    bool isCurrentlyPressed = BongoInput::isPressed(key_code);
     bool wasPressedLastFrame = keyState[key_code];
 
     keyState[key_code] = isCurrentlyPressed;
@@ -143,23 +143,172 @@ bool BongoInput::on_released(int key_code) {
     // if the key was pressed last frame and is not currently pressed
     return wasPressedLastFrame && !isCurrentlyPressed;
 }
-bool BongoInput::on_released(char c) { return BongoInput::on_released((int)c); }
+bool BongoInput::onReleased(char c) { return BongoInput::onReleased((int)c); }
+
+//============================================================================
+// POSITION ON SCREEN
+//============================================================================
+std::array<double, 2> BongoInput::Mouse::positionOnScreen() {
+    double x, y;
+
+#if defined(WINDOWS)
+    // TODO: impl.
+#elif defined(APPLE)
+    CGEventRef event = CGEventCreate(NULL);
+    CGPoint cursor = CGEventGetLocation(event);
+    CFRelease(event);
+
+    x = cursor.x;
+    y = cursor.y;
+#elif defined(LINUX)
+    // TODO: impl.
+#endif
+
+    return {x, y};
+}
+
+//============================================================================
+// POSITION ON FOCUSED WINDOW
+//============================================================================
+std::array<double, 2> BongoInput::Mouse::positionOnFocusedWindow() {
+    double x, y;
+    x = 0;
+    y = 0;
+
+#if defined(WINDOWS)
+    // TODO: impl.
+#elif defined(APPLE)
+    // clang-format off
+    // BUG:
+    //  - when the terminal is running a subprocess it gets very buggy
+
+    CFArrayRef windows = CGWindowListCopyWindowInfo(kCGWindowListOptionOnScreenOnly, kCGNullWindowID);
+
+    if (windows) {
+        // abs_ is just relating to the position on the entire screen
+        auto [abs_x, abs_y] = BongoInput::Mouse::positionOnScreen();
+        
+        CFIndex count = CFArrayGetCount(windows);
+
+        if (count > 0) {
+            CFDictionaryRef window_info = (CFDictionaryRef)CFArrayGetValueAtIndex(windows, 0);
+            CFDictionaryRef bounds_ref = (CFDictionaryRef)CFDictionaryGetValue(window_info, kCGWindowBounds);
+
+            // NOTE: can error
+            CGRect bounds = CGRect();
+            CGRectMakeWithDictionaryRepresentation(bounds_ref, &bounds);
+
+            // offset the cursor position within the window bounds
+            // rel_ = relative
+            double rel_x = abs_x - bounds.origin.x;
+            double rel_y = abs_y - bounds.origin.y;
+
+            x = std::clamp(rel_x, 0.0, bounds.size.width);
+            y = std::clamp(rel_y, 0.0, bounds.size.height);
+        }
+    }
+
+    CFRelease(windows);
+
+    // clang-format on
+#elif defined(LINUX)
+    // TODO: impl.
+#endif
+
+    return {x, y};
+}
+
+//============================================================================
+// POSITION ON HOVERED WINDOW
+//============================================================================
+std::array<double, 2> BongoInput::Mouse::positionOnHoveredWindow() {
+    double x, y;
+    x = 0;
+    y = 0;
+
+#if defined(WINDOWS)
+    // TODO: impl.
+#elif defined(APPLE)
+    // clang-format off
+    // BUG:
+    //  - when the terminal is running a subprocess it gets very buggy
+    //  - just overall buggy, issue with how bounds are grabbed
+
+    CFArrayRef windows = CGWindowListCopyWindowInfo(kCGWindowListOptionOnScreenOnly, kCGNullWindowID);
+
+    if (windows) {
+        // abs_ is just relating to the position on the entire screen
+        auto [abs_x, abs_y] = BongoInput::Mouse::positionOnScreen();
+        
+        CFIndex count = CFArrayGetCount(windows);
+
+        if (count > 0) {
+            for (int i = 0; count >= i; i++) {
+                CFDictionaryRef window_info = (CFDictionaryRef)CFArrayGetValueAtIndex(windows, i);
+                CFDictionaryRef bounds_ref = (CFDictionaryRef)CFDictionaryGetValue(window_info, kCGWindowBounds);
+            
+                // NOTE: can error
+                CGRect bounds = CGRect();
+                CGRectMakeWithDictionaryRepresentation(bounds_ref, &bounds);
+
+                if (bounds.origin.x <= abs_x <= bounds.size.width && 
+                    bounds.origin.y <= abs_y <= bounds.size.height) {
+
+                    // offset the cursor position within the window bounds
+                    // rel_ = relative
+                    double rel_x = abs_x - bounds.origin.x;
+                    double rel_y = abs_y - bounds.origin.y;
+                
+                    x = std::clamp(rel_x, 0.0, bounds.size.width);
+                    y = std::clamp(rel_y, 0.0, bounds.size.height);
+                    break;
+                }
+            }
+        }
+
+    }
+
+    CFRelease(windows);
+
+    // clang-format on
+#elif defined(LINUX)
+    // TODO: impl.
+#endif
+
+    return {x, y};
+}
 
 //============================================================================
 // BIND TO LUA
 //============================================================================
 void BongoInput::bindToLua() {
     luabridge::getGlobalNamespace(LuaState)
-        .addFunction("is_pressed",
-                     luabridge::overload<int>(&BongoInput::is_pressed),
-                     luabridge::overload<char>(&BongoInput::is_pressed))
-        .addFunction("on_pressed",
-                     luabridge::overload<int>(&BongoInput::on_pressed),
-                     luabridge::overload<char>(&BongoInput::on_pressed))
-        .addFunction("on_released",
-                     luabridge::overload<int>(&BongoInput::on_released),
-                     luabridge::overload<char>(&BongoInput::on_released))
+        // TODO: move this else where
+        .beginClass<std::pair<double, double>>("pair")
+        .addConstructor<void (*)(const double &, const double &)>()
+        .addProperty("first", &std::pair<double, double>::first)
+        .addProperty("second", &std::pair<double, double>::second)
+        .endClass()
+
+        .addFunction("isPressed",
+                     luabridge::overload<int>(&BongoInput::isPressed),
+                     luabridge::overload<char>(&BongoInput::isPressed))
+        .addFunction("onPressed",
+                     luabridge::overload<int>(&BongoInput::onPressed),
+                     luabridge::overload<char>(&BongoInput::onPressed))
+        .addFunction("onReleased",
+                     luabridge::overload<int>(&BongoInput::onReleased),
+                     luabridge::overload<char>(&BongoInput::onReleased))
         .beginNamespace("BongoInput")
+        // Mouse
+        .beginNamespace("Mouse")
+        .addFunction("positionOnScreen", &BongoInput::Mouse::positionOnScreen)
+        .addFunction("positionOnFocusedWindow",
+                     &BongoInput::Mouse::positionOnFocusedWindow)
+        .addFunction("positionOnHoveredWindow",
+                     &BongoInput::Mouse::positionOnHoveredWindow)
+        .endNamespace()
+        // Key
         .beginNamespace("Key")
         // INFO: based off http://www.foreui.com/articles/Key_Code_Table.htm
         // NOTE: 0 - 49
