@@ -7,6 +7,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake_modules/")
 set(CMAKE_BINARY_DIR "${CMAKE_SOURCE_DIR}/CMakeFiles")
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
+set(CMAKE_DEPS_DIR "${CMAKE_BINARY_DIR}/_deps")
 
 # for my clangd users out there
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
@@ -15,7 +16,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include(FetchContent)
-set(FETCHCONTENT_BASE_DIR ${CMAKE_SOURCE_DIR}/CMakeFiles/_deps)
+set(FETCHCONTENT_BASE_DIR ${CMAKE_DEPS_DIR})
 
 # allow easy differentiation between OS'
 if(UNIX AND NOT APPLE)
@@ -78,7 +79,7 @@ endfunction()
 include_directories(
   include # expose header.hpp
   ${CMAKE_SOURCE_DIR}/include/json # for parsing config.json
-  ${CMAKE_SOURCE_DIR}/CMakeFiles/_deps/luabridge3-src/Distribution/LuaBridge)
+  ${CMAKE_DEPS_DIR}/luabridge3-src/Source)
 
 # source files (anything under ./src/)
 file(GLOB_RECURSE SOURCES src/*.cpp)
@@ -89,7 +90,6 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 # ##############################################################################
 # INSTALL LUA AND LUA BRIDGE 3 (for cat scripts) #
 # ##############################################################################
-log(STATUS "Fetching LUA")
 FetchContent_Declare(
   lua
   GIT_REPOSITORY "https://github.com/walterschell/Lua"
@@ -98,7 +98,6 @@ FetchContent_MakeAvailable(lua)
 target_link_libraries(${PROJECT_NAME} PRIVATE lua_static)
 log(STATUS "Made LUA available")
 
-log(STATUS "Fetching LUA BRIDGE 3")
 FetchContent_Declare(
   LuaBridge3
   GIT_REPOSITORY "https://github.com/kunitoki/LuaBridge3"
@@ -110,7 +109,6 @@ log(STATUS "Made LUA BRIDGE 3 available")
 # INSTALL SFML (windows)  #
 # ------------------------#
 if(WIN32)
-  log(STATUS "Fetching SFML")
   FetchContent_Declare(
     SFML
     GIT_REPOSITORY https://github.com/SFML/SFML.git
@@ -133,7 +131,6 @@ else()
 endif()
 
 # link SFML
-log(STATUS "Linking SFML")
 target_link_libraries(${PROJECT_NAME} PRIVATE sfml-graphics sfml-window
                                               sfml-system)
 log(STATUS "Linked SFML")
@@ -152,14 +149,10 @@ if(WIN32 AND BUILD_SHARED_LIBS)
 endif()
 
 if(UNIX)
-  find_package(SDL2 REQUIRED)
-  include_directories(${SDL2_INCLUDE_DIR})
-  target_link_libraries(${PROJECT_NAME} PRIVATE ${SDL2_LIBRARIES})
-
   execute_process(
     COMMAND
       ${CMAKE_COMMAND} -E echo_append
-      "\n${BoldWhite}___| ${BoldBlue}*${ColorReset}NIX SPECIFIC'S ${BoldWhite}|___${ColorReset} : "
+      "\n${BoldWhite}___|${ColorReset}) ${BoldBlue}*${ColorReset}NIX SPECIFIC'S ${BoldWhite}|___${ColorReset} : "
   )
 
   if(LINUX)
