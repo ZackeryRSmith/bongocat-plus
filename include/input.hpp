@@ -19,18 +19,41 @@ void init();
 //============================================================================
 // IS PRESSED
 //============================================================================
-bool is_pressed(int key_code);
-bool is_pressed(char c);
+bool isPressed(int key_code);
+bool isPressed(char c);
 //============================================================================
 // ON PRESSED
 //============================================================================
-bool on_pressed(int key_code);
-bool on_pressed(char c);
+bool onPressed(int key_code);
+bool onPressed(char c);
 //============================================================================
 // ON RELEASED
 //============================================================================
-bool on_released(int key_code);
-bool on_released(char c);
+bool onReleased(int key_code);
+bool onReleased(char c);
+//============================================================================
+// MOUSE
+//============================================================================
+namespace Mouse {
+//----------------------------------------------------------------------------
+// positionOnFocusedWindow
+//----------------------------------------------------------------------------
+// get the position of the mouse relative to the current focused window's
+std::array<double, 2> positionOnFocusedWindow();
+
+//----------------------------------------------------------------------------
+// positionOnHoveredWindow
+//----------------------------------------------------------------------------
+// get the position of the mouse relative to the window under the mouse
+std::array<double, 2> positionOnHoveredWindow();
+
+//----------------------------------------------------------------------------
+// positionOnScreen
+//----------------------------------------------------------------------------
+// get the position of the mouse on the screen
+std::array<double, 2> positionOnScreen();
+
+}; // namespace Mouse
 //============================================================================
 //  BIND TO LUA
 //============================================================================
