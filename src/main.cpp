@@ -1,9 +1,10 @@
-#include "input.hpp"
 #include <iostream>
-
-#include <global.hpp>
 #include <lua.hpp>  // bongo lua
 #include <sfml.hpp> // sfml lua bindings
+
+#include <global.hpp>
+#include <helper.hpp>
+#include <input.hpp>
 #include <sprite.hpp>
 #include <window.hpp>
 
@@ -20,6 +21,7 @@ int main() {
     BongoWindow::bindToLua();
     BongoSprite::bindToLua();
     BongoInput::bindToLua();
+    BongoHelper::bindToLua();
 
     BongoLua::executeScript("src/test.lua");
     BongoLua::closeLua();
