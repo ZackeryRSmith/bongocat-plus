@@ -61,16 +61,38 @@ function BongoSprite.loadFromFile(filename) end
 -- BongoInput API Stubs
 -- ========================================================================
 
-function is_pressed(int) end
-function is_pressed(char) end
+function isPressed(int)
+	return true -- just to ignore LSP errors the actual impl. is done in c++
+end
+function isPressed(char)
+	return true -- just to ignore LSP errors the actual impl. is done in c++
+end
 
-function on_pressed(int) end
-function on_pressed(char) end
+function onPressed(int)
+	return true -- just to ignore LSP errors the actual impl. is done in c++
+end
+function onPressed(char)
+	return true -- just to ignore LSP errors the actual impl. is done in c++
+end
 
-function on_released(int) end
-function on_released(char) end
+function onPeleased(int)
+	return true -- just to ignore LSP errors the actual impl. is done in c++
+end
+function onPeleased(char)
+	return true -- just to ignore LSP errors the actual impl. is done in c++
+end
 
 BongoInput = {}
+function BongoInput.Mouse.positionOnScreen()
+	return 0.0, 0.0
+end
+function BongoInput.Mouse.positionOnFocusedWindow()
+	return 0.0, 0.0
+end
+function BongoInput.Mouse.positionOnHoveredWindow()
+	return 0.0, 0.0
+end
+
 BongoInput.Key = {
 	-- INFO: based off http://www.foreui.com/articles/Key_Code_Table.htm
 	-- NOTE: 0 - 49
@@ -189,6 +211,31 @@ BongoInput.Key = {
 }
 
 -- ========================================================================
+-- BongoHelper API Stubs
+-- ========================================================================
+
+function ternary(condition, if_true, if_false)
+	return true -- just to ignore LSP errors the actual impl. is done in c++
+end
+
+-- logging
+function bongoDebug(msg) end
+function bongoError(msg) end
+function bongoFatal(msg) end
+function bongoInfo(msg) end
+function bongoWarn(msg) end
+
+BongoHelper = {}
+
+--function BongoHelper.draw_circle(x, y, radius, color) end
+--function BongoHelper.draw_line(x1, y1, x2, y2, color, thickness) end
+--function BongoHelper.draw_arc(x1, y1, x2, y2, width, color) end
+-- sx, sy ~ start x, y
+-- px, py ~ peak x, y
+-- ex, ey ~ end x, y
+--function BongoHelper.draw_parabola(sx, sy, px, py, ex, ey, num_points) end
+
+-- ========================================================================
 -- SFML (Sfml namespace) API Stubs
 -- ========================================================================
 
@@ -287,7 +334,13 @@ Sfml.Color = {
 	-- Static Colors
 	Black = Sfml.Color.new(0, 0, 0),
 	White = Sfml.Color.new(255, 255, 255),
-	-- ... (Add other static colors here)
+	Red = Sfml.Color.new(255, 0, 0),
+	Green = Sfml.Color.new(0, 255, 0),
+	Blue = Sfml.Color.new(0, 0, 255),
+	Yellow = Sfml.Color.new(255, 255, 0),
+	Magenta = Sfml.Color.new(255, 0, 255),
+	Cyan = Sfml.Color.new(0, 255, 255),
+	Transparent = Sfml.Color.new(0, 0, 0, 0),
 }
 
 ---------------------------------------------------------------------------
