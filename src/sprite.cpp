@@ -19,8 +19,8 @@ sf::Sprite *BongoSprite::loadFromFile(const std::string &filename) {
     if (sprite->getLocalBounds().height > max_sprite_height)
         max_sprite_height = sprite->getLocalBounds().height;
 
-    std::cout << "max sw: " << max_sprite_width
-              << "  max sh: " << max_sprite_height << std::endl;
+    // std::cout << "max sw: " << max_sprite_width
+    //           << "  max sh: " << max_sprite_height << std::endl;
 
     return sprite;
 }
