@@ -24,6 +24,13 @@ void create(UIntRef width, UIntRef height, UInt32Ref style);
 void create(UIntRef width, UIntRef height, UInt32Ref style, Vec2iRef position);
 
 //============================================================================
+// GET WINDOW SIZE
+//============================================================================
+unsigned int getWidth();
+unsigned int getHeight();
+std::array<unsigned int, 2> getSize();
+
+//============================================================================
 // REFRESH
 //============================================================================
 void refresh();
