@@ -12,6 +12,10 @@ local mousebg = BongoSprite.loadFromFile("cats/osu/mousebg.png")
 local testbg = BongoSprite.loadFromFile("cats/osu/temp.png")
 
 -- states
+local up_state = false
+local left_state = false
+local right_state = false
+local wave_state = false
 local smoke_state = false
 
 -- create a window
@@ -21,16 +25,28 @@ while BongoWindow.processEvents() == 0 do
 	-- clear the window with a color (optional but recommended)
 	BongoWindow.clear(Sfml.Color.White)
 
-	-- smoke logic
-	if on_pressed(BongoInput.Key.s) then
-		smoke_state = not smoke_state
-	end
+	-- state logic
+	left_state = isPressed(BongoInput.Key.z) and not right_state
+	right_state = isPressed(BongoInput.Key.x) and not left_state
+	wave_state = isPressed(BongoInput.Key.w)
+	smoke_state = ternary(onPressed(BongoInput.Key.s), not smoke_state, smoke_state)
+	up_state = not (left_state or right_state or wave_state)
 
-	-- draw the sprite to the window
+	-- draw the bg sprite to the window
 	BongoWindow.draw(mousebg)
 
-	-- draw smoke if smoke_state is true
+	-- draw if logic
+	BongoWindow.drawif(left, left_state)
+	BongoWindow.drawif(right, right_state)
+	BongoWindow.drawif(wave, wave_state)
 	BongoWindow.drawif(smoke, smoke_state)
+	BongoWindow.drawif(up, up_state)
+
+	-- mouse hand logic
+	local mdata = BongoInput.Mouse.positionOnHoveredWindow()
+	local x, y = mdata[1], mdata[2]
+
+	bongoDebug("(" .. x .. ", " .. y .. ")")
 
 	-- display the window's contents
 	BongoWindow.display()
