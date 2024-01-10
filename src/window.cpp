@@ -33,6 +33,15 @@ void BongoWindow::create(UIntRef width, UIntRef height, UInt32Ref style,
 }
 
 //============================================================================
+// GET WINDOW SIZE
+//============================================================================
+unsigned int BongoWindow::getWidth() { return mainWindow.getSize().x; }
+unsigned int BongoWindow::getHeight() { return mainWindow.getSize().y; }
+std::array<unsigned int, 2> BongoWindow::getSize() {
+    return {mainWindow.getSize().x, mainWindow.getSize().y};
+}
+
+//============================================================================
 // REFRESH
 //============================================================================
 void BongoWindow::refresh() {
@@ -134,6 +143,11 @@ void BongoWindow::draw(const sf::Drawable &drawable) {
     mainWindow.draw(drawable, mainRenderStates);
 }
 
+void BongoWindow::draw(const sf::Vertex *vertices, size_t vertex_count,
+                       sf::PrimitiveType type) {
+    mainWindow.draw(vertices, vertex_count, type, mainRenderStates);
+}
+
 //============================================================================
 // DRAW IF
 //============================================================================
@@ -165,6 +179,10 @@ void BongoWindow::bindToLua() {
                 &BongoWindow::create),
             luabridge::overload<UIntRef, UIntRef, UInt32Ref, Vec2iRef>(
                 &BongoWindow::create))
+        // get window size functions
+        .addFunction("get_width", &BongoWindow::getWidth)
+        .addFunction("get_height", &BongoWindow::getHeight)
+        .addFunction("get_size", &BongoWindow::getSize)
         // refresh functions
         .addFunction("refresh", luabridge::overload<>(&BongoWindow::refresh),
                      luabridge::overload<UIntRef, UIntRef, UInt32Ref>(
