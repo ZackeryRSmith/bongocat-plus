@@ -100,6 +100,15 @@ void BongoInput::init() {
 // IS PRESSED
 //============================================================================
 bool BongoInput::isPressed(int key_code) {
+    // any key
+    if (key_code == -1) {
+        for (int k = -1; k < sf::Keyboard::KeyCount; k++) {
+            if (sf::Keyboard::isKeyPressed(static_cast<sf::Keyboard::Key>(k)))
+                return true;
+        }
+        return false;
+    }
+
     if (key_code == 16) {
         return sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) ||
                sf::Keyboard::isKeyPressed(sf::Keyboard::RShift);
@@ -310,6 +319,7 @@ void BongoInput::bindToLua() {
         .endNamespace()
         // Key
         .beginNamespace("Key")
+        .addVariable("Any", -1)
         // INFO: based off http://www.foreui.com/articles/Key_Code_Table.htm
         // NOTE: 0 - 49
         .addVariable("backspace", 8)
