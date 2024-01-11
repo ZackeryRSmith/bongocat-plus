@@ -1,4 +1,5 @@
 #include <global.hpp>
+#include <input.hpp>
 #include <sprite.hpp>
 #include <window.hpp>
 
@@ -126,7 +127,7 @@ void BongoWindow::clear(const sf::Color &color) { mainWindow.clear(color); }
 // DRAW
 //============================================================================
 // TODO: this function is slow and consuming. Please fix this, it's called a lot
-void BongoWindow::draw(sf::Sprite &sprite) {
+void BongoWindow::draw(const sf::Sprite &sprite) {
     const sf::FloatRect sprite_rect = sprite.getLocalBounds();
 
     if (sprite_rect.height > rstate_shift_height)
@@ -151,13 +152,31 @@ void BongoWindow::draw(const sf::Vertex *vertices, size_t vertex_count,
 //============================================================================
 // DRAW IF
 //============================================================================
-void BongoWindow::drawif(sf::Sprite &sprite, bool condition) {
+void BongoWindow::drawif(const sf::Sprite &sprite, bool condition) {
     if (condition)
         BongoWindow::draw(sprite);
 }
 void BongoWindow::drawif(const sf::Drawable &drawable, bool condition) {
     if (condition)
         BongoWindow::draw(drawable);
+}
+
+//============================================================================
+// DRAW IF ELSE
+//============================================================================
+void BongoWindow::drawifelse(const sf::Sprite &true_sprite, bool condition,
+                             const sf::Sprite &false_sprite) {
+    if (condition)
+        BongoWindow::draw(true_sprite);
+    else
+        BongoWindow::draw(false_sprite);
+}
+void BongoWindow::drawifelse(const sf::Drawable &true_drawable, bool condition,
+                             const sf::Drawable &false_drawable) {
+    if (condition)
+        BongoWindow::draw(true_drawable);
+    else
+        BongoWindow::draw(false_drawable);
 }
 
 //============================================================================
@@ -195,14 +214,19 @@ void BongoWindow::bindToLua() {
             luabridge::overload<const sf::Color &>(&BongoWindow::clear))
         // drawing functions
         .addFunction(
-            "draw",
-            luabridge::overload<const sf::Drawable &>(&BongoWindow::draw),
-            luabridge::overload<sf::Sprite &>(&BongoWindow::draw))
+            "draw", luabridge::overload<const sf::Sprite &>(&BongoWindow::draw),
+            luabridge::overload<const sf::Drawable &>(&BongoWindow::draw))
         .addFunction(
             "drawif",
+            luabridge::overload<const sf::Sprite &, bool>(&BongoWindow::drawif),
             luabridge::overload<const sf::Drawable &, bool>(
-                &BongoWindow::drawif),
-            luabridge::overload<sf::Sprite &, bool>(&BongoWindow::drawif))
+                &BongoWindow::drawif))
+        .addFunction(
+            "drawifelse",
+            luabridge::overload<const sf::Sprite &, bool, const sf::Sprite &>(
+                &BongoWindow::drawifelse),
+            luabridge::overload<const sf::Drawable &, bool,
+                                const sf::Drawable &>(&BongoWindow::drawifelse))
         .addFunction("display", &BongoWindow::display)
         // other functions
         .addFunction("processEvents", &BongoWindow::processEvents)

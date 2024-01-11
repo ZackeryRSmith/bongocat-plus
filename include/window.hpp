@@ -51,14 +51,24 @@ void clear(const sf::Color &color);
 //============================================================================
 // DRAW
 //============================================================================
-void draw(sf::Sprite &sprite);
+void draw(const sf::Sprite &sprite);
 void draw(const sf::Drawable &drawable);
+void draw(const sf::Vertex *vertices, size_t vertex_count,
+          sf::PrimitiveType type);
 
 //============================================================================
 // DRAW IF
 //============================================================================
-void drawif(sf::Sprite &sprite, bool condition);
+void drawif(const sf::Sprite &sprite, bool condition);
 void drawif(const sf::Drawable &drawable, bool condition);
+
+//============================================================================
+// DRAW IF ELSE
+//============================================================================
+void drawifelse(const sf::Sprite &true_sprite, bool condition,
+                const sf::Sprite &false_sprite);
+void drawifelse(const sf::Drawable &true_drawable, bool condition,
+                const sf::Drawable &false_drawable);
 
 //============================================================================
 // DISPLAY
