@@ -43,6 +43,7 @@ function BongoWindow.clear(color) end
 
 function BongoWindow.draw(drawable) end
 function BongoWindow.drawif(drawable, bool) end
+function BongoWindow.drawifelse(drawable, bool, drawable) end
 
 function BongoWindow.display() end
 
