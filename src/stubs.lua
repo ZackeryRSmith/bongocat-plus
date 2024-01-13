@@ -25,6 +25,11 @@
     ========================================================================
 ]]
 
+BongoAudio = {}
+
+function BongoAudio.loadSoundFromFile(path) end
+function BongoAudio.loadMusicFromFile(path) end
+
 -- ========================================================================
 -- BongoWindow API Stubs
 -- ========================================================================
@@ -369,6 +374,18 @@ Sfml.Texture = {
 -- Sprite
 ---------------------------------------------------------------------------
 Sfml.Sprite = {
+	-- Constructors and relevant methods will be filled in later
+}
+
+Sfml.Sound = {
+	-- Constructors and relevant methods will be filled in later
+}
+
+Sfml.SoundBuffer = {
+	-- Constructors and relevant methods will be filled in later
+}
+
+Sfml.Music = {
 	-- Constructors and relevant methods will be filled in later
 }
 
