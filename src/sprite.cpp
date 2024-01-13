@@ -7,9 +7,9 @@ float max_sprite_height = 0.0;
 //============================================================================
 // LOAD FROM ...
 //============================================================================
-sf::Sprite *BongoSprite::loadFromFile(const std::string &filename) {
+sf::Sprite *BongoSprite::loadFromFile(const std::string &path) {
     sf::Texture *texture = new sf::Texture();
-    texture->loadFromFile(filename);
+    texture->loadFromFile(path);
 
     sf::Sprite *sprite = new sf::Sprite();
     sprite->setTexture(*texture);
