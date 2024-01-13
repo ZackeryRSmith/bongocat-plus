@@ -32,6 +32,7 @@ extern "C" {
 #include <LuaBridge/LuaBridge.h>
 
 #include <LuaBridge/Array.h>
+#include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 
 // used for std::clamp in input.cpp

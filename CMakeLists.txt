@@ -116,8 +116,7 @@ if(WIN32)
   FetchContent_MakeAvailable(SFML)
   log(STATUS "Made SFML available")
 
-  # don't build these as they're unused
-  set(SFML_BUILD_AUDIO FALSE)
+  # don't build as it's unused
   set(SFML_BUILD_NETWORK FALSE)
 
 else()
@@ -126,13 +125,13 @@ else()
   # ----------------------------#
   find_package(
     SFML 2.5
-    COMPONENTS graphics window system
+    COMPONENTS graphics window system audio
     REQUIRED)
 endif()
 
 # link SFML
 target_link_libraries(${PROJECT_NAME} PRIVATE sfml-graphics sfml-window
-                                              sfml-system)
+                                              sfml-system sfml-audio)
 log(STATUS "Linked SFML")
 
 # ---------------------------------------------------------------------#
@@ -152,7 +151,7 @@ if(UNIX)
   execute_process(
     COMMAND
       ${CMAKE_COMMAND} -E echo_append
-      "\n${BoldWhite}___|${ColorReset}) ${BoldBlue}*${ColorReset}NIX SPECIFIC'S ${BoldWhite}|___${ColorReset} : "
+      "\n${BoldWhite}___|${ColorReset} ${BoldBlue}*${ColorReset}NIX SPECIFIC'S ${BoldWhite}|___${ColorReset} : "
   )
 
   if(LINUX)

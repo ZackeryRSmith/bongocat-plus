@@ -2,6 +2,7 @@
 #include <lua.hpp>  // bongo lua
 #include <sfml.hpp> // sfml lua bindings
 
+#include <audio.hpp>
 #include <global.hpp>
 #include <helper.hpp>
 #include <input.hpp>
@@ -21,6 +22,7 @@ int main() {
     BongoWindow::bindToLua();
     BongoSprite::bindToLua();
     BongoInput::bindToLua();
+    BongoAudio::bindToLua();
     BongoHelper::bindToLua();
 
     BongoLua::executeScript("src/test.lua");
