@@ -19,6 +19,7 @@ namespace BongoWindow {
 //============================================================================
 // CREATE
 //============================================================================
+void create();
 void create(UIntRef width, UIntRef height);
 void create(UIntRef width, UIntRef height, UInt32Ref style);
 void create(UIntRef width, UIntRef height, UInt32Ref style, Vec2iRef position);

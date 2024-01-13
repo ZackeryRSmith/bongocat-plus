@@ -12,6 +12,10 @@ unsigned int rstate_shift_height = 0;
 //============================================================================
 // CREATE
 //============================================================================
+void BongoWindow::create() {
+    BongoWindow::create(max_sprite_width, max_sprite_height);
+}
+
 void BongoWindow::create(UIntRef width, UIntRef height) {
     BongoWindow::create(width, height, sf::Style::Titlebar | sf::Style::Close);
 }
@@ -192,7 +196,7 @@ void BongoWindow::bindToLua() {
         .beginNamespace("BongoWindow")
         // create functions
         .addFunction(
-            "create",
+            "create", luabridge::overload<>(&BongoWindow::create),
             luabridge::overload<UIntRef, UIntRef>(&BongoWindow::create),
             luabridge::overload<UIntRef, UIntRef, UInt32Ref>(
                 &BongoWindow::create),
