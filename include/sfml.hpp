@@ -224,6 +224,56 @@ inline void bindToLua() {
         //-------------------------------------------------------------------
         .beginClass<sf::String>("String")
         .endClass() // sf::String
+        //-------------------------------------------------------------------
+        // sf::Sound
+        //-------------------------------------------------------------------
+        //.beginNamespace("Sound") // hacky way to add an enum to Sfml.Sound
+        //.beginNamespace("Status")
+        //.endNamespace() // sf::Sound::Status
+        //.addVariable("Stopped", sf::Sound::Status::Stopped)
+        //.addVariable("Paused", sf::Sound::Status::Paused)
+        //.addVariable("Playing", sf::Sound::Status::Playing)
+        //.endNamespace() // sf::Sound (namespace)
+
+        .beginClass<sf::Sound>("Sound")
+        .addConstructor<void()>()
+        .addFunction("play", &sf::Sound::play)
+        .addFunction("pause", &sf::Sound::play)
+        .addFunction("stop", &sf::Sound::stop)
+        .addFunction("setLoop", &sf::Sound::setLoop)
+        .addFunction("setPlayingOffset", &sf::Sound::setPlayingOffset)
+        .addFunction("getLoop", &sf::Sound::getLoop)
+        .addFunction("getPlayingOffset", &sf::Sound::getPlayingOffset)
+        .addFunction("getStatus", &sf::Sound::getStatus)
+        .addFunction("setPitch", &sf::Sound::setPitch)
+        .addFunction("setVolume", &sf::Sound::setVolume)
+        .addFunction(
+            "setPosition",
+            luabridge::overload<float, float, float>(&sf::Sound::setPosition),
+            luabridge::overload<const sf::Vector3f &>(&sf::Sound::setPosition))
+        .addFunction("setRelativeToListener", &sf::Sound::setRelativeToListener)
+        .addFunction("setMinDistance", &sf::Sound::setMinDistance)
+        .addFunction("setAttenuation", &sf::Sound::setAttenuation)
+        .addFunction("getPitch", &sf::Sound::getPitch)
+        .addFunction("getVolume", &sf::Sound::getVolume)
+        .addFunction("getPosition", &sf::Sound::getPosition)
+        .addFunction("isRelativeToListener", &sf::Sound::isRelativeToListener)
+        .addFunction("getMinDistance", &sf::Sound::getMinDistance)
+        .addFunction("getAttenuation", &sf::Sound::getAttenuation)
+        .endClass() // sf::Sound
+        //-------------------------------------------------------------------
+        // sf::Music
+        //-------------------------------------------------------------------
+        //.beginNamespace("Music") // hacky way to add a enum to Sfml.Music
+        //.beginNamespace("Status")
+        //.endNamespace() // sf::Sound::Status
+        //.addVariable("Stopped", sf::Music::Status::Stopped)
+        //.addVariable("Paused", sf::Music::Status::Paused)
+        //.addVariable("Playing", sf::Music::Status::Playing)
+        //.endNamespace() // sf::Sound (namespace)
+
+        .beginClass<sf::Music>("Music")
+        .endClass() // sf::Music
 
         .endNamespace(); // Sfml
 }
