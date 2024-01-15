@@ -8,7 +8,7 @@ the state of the refactor is not current with the in-dev branch
 <br/>
 <div align="center">
   <a href="https://github.com/ZackeryRSmith/bongocat-plus/">
-    <img src="./res/catbanner.jpg" alt="logo" width="590" height="332">
+    <img src="./res/catbanner.gif" alt="logo" width="590" height="332">
   </a>
 
 <!-- BUILD STATUS' -->
