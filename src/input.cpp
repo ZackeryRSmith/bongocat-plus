@@ -101,7 +101,7 @@ void BongoInput::init() {
 //============================================================================
 bool BongoInput::isPressed(int key_code) {
     // any key
-    if (key_code == -1) {
+    if (key_code == -2) {
         for (int k = -1; k < sf::Keyboard::KeyCount; k++) {
             if (sf::Keyboard::isKeyPressed(static_cast<sf::Keyboard::Key>(k)))
                 return true;
@@ -318,8 +318,11 @@ void BongoInput::bindToLua() {
                      &BongoInput::Mouse::positionOnHoveredWindow)
         .endNamespace()
         // Key
+        .addVariable("KeyCount", sf::Keyboard::KeyCount)
         .beginNamespace("Key")
-        .addVariable("Any", -1)
+        .addVariable("None", -3)
+        .addVariable("Any", -2)
+        .addVariable("Unknown", -1)
         // INFO: based off http://www.foreui.com/articles/Key_Code_Table.htm
         // NOTE: 0 - 49
         .addVariable("backspace", 8)
@@ -331,6 +334,7 @@ void BongoInput::bindToLua() {
         .addVariable("pause", 19)
         .addVariable("caps_lock", 20)
         .addVariable("escape", 27)
+        .addVariable("space", 32)
         .addVariable("page_up", 33)
         .addVariable("page_down", 34)
         .addVariable("end", 35)
