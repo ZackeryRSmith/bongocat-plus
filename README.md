@@ -2,12 +2,15 @@
 <a name="top"></a>
 
 > [!NOTE]
-the state of the refactor is not current with the in-dev branch
+the state of the refactor is not current with the in-dev branch... *so then why is this (refactor) the default?*
+
+> Simply because I believe it's more indicative of this projects direction. If you want a version of Bongocat-Plus
+that's fully complete. Please check out [in-dev](https://github.com/ZackeryRSmith/bongocat-plus/tree/in-dev)
 
 <!-- PROJECT LOGO -->
 <br/>
 <div align="center">
-  <a href="https://github.com/ZackeryRSmith/bongocat-plus/">
+  <a href="https://github.com/ZackeryRSmith/bongocat-plus/tree/refactor/cats/plus">
     <img src="./res/catbanner.gif" alt="logo" width="590" height="332">
   </a>
 
