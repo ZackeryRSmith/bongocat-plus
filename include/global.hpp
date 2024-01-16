@@ -1,6 +1,9 @@
 #ifndef BONGO_CAT_GLOBAL_HPP
 #define BONGO_CAT_GLOBAL_HPP
 
+#include <SFML/Audio.hpp>
+#include <SFML/Graphics.hpp>
+
 #if defined(_WIN32) || defined(WIN32) || defined(__CYGWIN__)
 #define WINDOWS
 #include <windows.h>
@@ -29,11 +32,8 @@ extern "C" {
 #include "lualib.h"
 }
 
-#include <LuaBridge/LuaBridge.h>
-
 #include <LuaBridge/Array.h>
-#include <SFML/Audio.hpp>
-#include <SFML/Graphics.hpp>
+#include <LuaBridge/LuaBridge.h>
 
 // used for std::clamp in input.cpp
 #include <algorithm>
