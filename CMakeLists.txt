@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 3.10)
 project(bongocat)
 
+# used to hide the lua cmake deprecation warning
+set(CMAKE_WARN_DEPRECATED
+    OFF
+    CACHE BOOL "" FORCE)
+
 # setup cmake directories to keep root clean
 set(CMAKE_CACHEFILE_DIR "${CMAKE_SOURCE_DIR}/CMakeFiles")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
@@ -77,7 +82,7 @@ endfunction()
 # ##############################################################################
 
 include_directories(
-  include # expose header.hpp
+  include # expose all headers
   ${CMAKE_SOURCE_DIR}/include/json # for parsing config.json
   ${CMAKE_DEPS_DIR}/luabridge3-src/Source)
 
@@ -92,6 +97,7 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 # ##############################################################################
 FetchContent_Declare(
   lua
+  QUIET REQUIRED
   GIT_REPOSITORY "https://github.com/walterschell/Lua"
   GIT_TAG master)
 FetchContent_MakeAvailable(lua)
@@ -100,6 +106,7 @@ log(STATUS "Made LUA available")
 
 FetchContent_Declare(
   LuaBridge3
+  QUIET REQUIRED
   GIT_REPOSITORY "https://github.com/kunitoki/LuaBridge3"
   GIT_TAG master)
 FetchContent_MakeAvailable(LuaBridge3)
@@ -111,6 +118,7 @@ log(STATUS "Made LUA BRIDGE 3 available")
 if(WIN32)
   FetchContent_Declare(
     SFML
+    QUIET REQUIRED
     GIT_REPOSITORY https://github.com/SFML/SFML.git
     GIT_TAG 2.6.x)
   FetchContent_MakeAvailable(SFML)
@@ -126,13 +134,13 @@ else()
   find_package(
     SFML 2.5
     COMPONENTS graphics window system audio
-    REQUIRED)
+    QUIET REQUIRED)
 endif()
 
 # link SFML
 target_link_libraries(${PROJECT_NAME} PRIVATE sfml-graphics sfml-window
                                               sfml-system sfml-audio)
-log(STATUS "Linked SFML")
+log(STATUS "Linked SFML ${SFML_VERSION}")
 
 # ---------------------------------------------------------------------#
 # Ensure that the runtime DLLs are copied to the same directory as the #
