@@ -46,10 +46,8 @@ that's fully complete. Please check out [in-dev](https://github.com/ZackeryRSmit
   <summary>Table of Contents</summary>
   <ol>
     <li><a href="#about-the-project">About The Project</a></li>
-    <li><a href="#additional-information">Additional Information</a></li>
-    <li><a href="#contributing">Contributing</a></li>
     <ul>
-      <li><a href="#building-and-testing">Building and Testing</a></li>
+      <li><a href="#building">Building</a></li>
       <ul>
           <li><a href="#windows">Windows</a></li>
           <li><a href="#macosx">Windows</a></li>
@@ -61,30 +59,22 @@ that's fully complete. Please check out [in-dev](https://github.com/ZackeryRSmit
 </details>
 
 ## About the Project
-A Bongo Cat overlay with smooth paw movement and simple skinning ability, written in C++, for osu! *This project is an improved fork* as the original project has lost support from the developers (80+ unsolved issues). This project aims to implement nearly all feature requests present in the original project. Along with fixing some bugs.
+A Bongo Cat overlay with ~~smooth paw movement~~ **(**[#27](https://github.com/ZackeryRSmith/bongocat-plus/issues/27)**)** and a highly customizable script, written in C++. *This project is an improved fork* as the original project has lost support from the developers (80+ unsolved issues). This project once aimed just to implement nearly all the feature requests. It has since broken off, becoming unrecognisable from the original. All the code from the original has been rewritten, but it's all thanks to the wonderful people who created Bongocat-Osu, that Bongocat-Plus exists!
 
-## Additional Information
-Press Ctrl + R to reload configuration and images (will only reload configurations when the window is focused).
-
-Supported operating system:
-* Windows
-* MacOSX
-* Linux
-
-**_Note_**: If you're using WINE to run Osu make sure that this application runs under the same `WINEPREFIX`.
-          Though I highly recommend you use Osu!Lazer if you are on MaxOSX, or linux to avoid WINE.
-
-## Contributing
-This project uses [SFML](https://www.sfml-dev.org/index.php) and [JsonCpp](https://github.com/open-source-parsers/jsoncpp). JsonCpp libraries are directly included in the source using the provided `amalgamation.py` from the developers. See below on how to compile bongocat-plus
-
-### Building and Testing
+### Building
 #### Windows
-Download the SFML library [here](https://www.sfml-dev.org/index.php), once done and extracted, clone this repository `git clone https://github.com/ZackeryRSmith/bongocat-plus && cd bongocat-plus`. If you don't already have it, install [CMake](https://cmake.org/). Now run the following commands to build bongocat-plus
+To compile on Windows you **need** *(relevant links are provided, but if you have the tools installed already you'll be fine)*
+- [git](https://www.git-scm.com/downloads)
+- [cygwin](https://cygwin.com/install.html), [MinGW](https://sourceforge.net/projects/mingw/)
+  - Make
+  - g++
+- [CMake](https://cmake.org/download/)
 
-```
-mkdir build
-cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DSFML_ROOT=/path/to/SFML <-- BE SURE TO CHANGE THIS TO THE PATH OF YOUR SFML INSTALLATION
-cd build && make
+```cmd
+git clone https://github.com/ZackeryRSmith/bongocat-plus
+cd bongocat-plus
+cmake .
+make
 ```
 
 Boom, you have just compiled bongocat-plus.
