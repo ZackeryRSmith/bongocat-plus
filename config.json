@@ -1,74 +1,60 @@
 {
-    "cat": 1,
     "cats": {
         "osu": {
-            "mouse": true,
-            "toggleSmoke": true,
-            "pawColor": [255, 255, 255],
-            "pawEdgeColor": [0, 0, 0],
-            "key1": ["Z"],
-            "key2": ["X"],
-            "smoke": ["C"],
-            "wave": ["W"],
+            "circles": {
+                "left_key": ["Z"],
+                "right_key": ["X"],
+                "smoke_key": ["C"],
+                "wave_key": ["W"],
 
-            "pawArc1Width": 7,
-            "pawArc2Width": 6,
-            "pawStartingPoint": [211, 159],
-            "pawEndingPoint": [258, 228]
+                "paw_color": [255, 255, 255],
+                "paw_edge_color": [0, 0, 0]
+            },
+            "mania": {
+                "key4K": ["D", "F", "J", "K"],
+                "key5K": ["D", "F", 32, "J", "K"],
+                "key7K": ["S", "D", "F", 32, "J", "K", "L"]
+            },
+            "taiko": {
+                "left_center_key": ["X"],
+                "right_center_key": ["C"],
+                "left_rim_key": ["Z"],
+                "right_rim_key": ["V"]
+            },
+            "catch": {
+                "left_key": [37],
+                "right_key": [39],
+                "dash_key": [16]
+            }
         },
+        "pengu": {
+            "left_key": ["Z"],
+            "right_key": ["X"],
 
-        "taiko": {
-            "leftCenter": ["X"],
-            "rightCenter": ["C"],
-            "leftRim": ["Z"],
-            "rightRim": ["V"]
+            "paw_color": [255, 255, 255],
+            "paw_edge_color": [0, 0, 0]
         },
-
-        "catch": {
-            "left": [37],
-            "right": [39],
-            "dash": [16]
+        "keyboard": {
+            "paw_color": [255, 255, 255],
+            "paw_edge_color": [0, 0, 0]
         },
-
-        "mania": {
-            "4K": false,
-            "key4K": ["D", "F", "J", "K"],
-            "key7K": ["S", "D", "F", " ", "J", "K", "L"]
+        "original": {
+            "left_key": ["Z"],
+            "right_key": ["X"]
         },
-
-        "fnf": {
-            "mouse": true,
-            "toggleSmoke": true,
-            "pawColor": [255, 255, 255],
-            "pawEdgeColor": [0, 0, 0],
-            "key1": ["Z"],
-            "key2": ["X"],
-            "smoke": ["C"],
-            "wave": ["W"],
-
-            "pawArc1Width": 7,
-            "pawArc2Width": 6,
-            "pawStartingPoint": [211, 159],
-            "pawEndingPoint": [258, 228]
+        "plus": {
+            "left_key": ["Z"],
+            "right_key": ["X"]
+        },
+        "hard_worker": {
+            "left_key": ["Z"],
+            "right_key": ["X"]
         }
-    },
-
-    "resolution": {
-        "letterboxing": false,
-        "width": 1920,
-        "height": 1080,
-        "horizontalPosition": 0,
-        "verticalPosition": 0
     },
 
     "decoration": {
         "borderless": false,
-        "leftHanded": false,
-        "backgroundColor": [224, 22, 66],
-        "offsetX": [0, 11],
-        "offsetY": [0, -20],
-        "scalar": [1.0, 1.0]
+        "backgroundColor": [224, 22, 66]
     },
-
     "auto-reload": true
 }
