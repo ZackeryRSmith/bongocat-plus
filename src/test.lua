@@ -58,7 +58,7 @@ local function allFalse(t)
 	return true
 end
 
-BongoWindow.create()
+BongoWindow.create(Sfml.Style.None)
 
 while BongoWindow.processEvents() == 0 do
 	BongoWindow.clear(Sfml.Color.White)

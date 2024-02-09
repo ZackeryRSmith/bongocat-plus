@@ -5,6 +5,7 @@
 
 sf::Vector2i grabbed_offset;
 bool grabbed_window = false;
+bool borderless = false;
 
 unsigned int rstate_shift_width = 0;
 unsigned int rstate_shift_height = 0;
@@ -16,11 +17,19 @@ void BongoWindow::create() {
     BongoWindow::create(max_sprite_width, max_sprite_height);
 }
 
+void BongoWindow::create(UInt32Ref style) {
+    BongoWindow::create(max_sprite_width, max_sprite_height, style);
+}
+
 void BongoWindow::create(UIntRef width, UIntRef height) {
     BongoWindow::create(width, height, sf::Style::Titlebar | sf::Style::Close);
 }
 
+// NOTE: All BongoWindow create functions rely on this function
 void BongoWindow::create(UIntRef width, UIntRef height, UInt32Ref style) {
+    if (style == sf::Style::None)
+        borderless = true;
+    
     mainWindow.create(sf::VideoMode(width, height), "BongoCat+", style);
     // check if the window being created is bigger then the screen
     if (mainWindow.getSize().x < width || mainWindow.getSize().y < height)
@@ -44,6 +53,29 @@ unsigned int BongoWindow::getWidth() { return mainWindow.getSize().x; }
 unsigned int BongoWindow::getHeight() { return mainWindow.getSize().y; }
 std::array<unsigned int, 2> BongoWindow::getSize() {
     return {mainWindow.getSize().x, mainWindow.getSize().y};
+}
+
+//============================================================================
+// GET WINDOW POSITION
+//============================================================================
+unsigned int BongoWindow::getX() { return mainWindow.getSize().x; }
+unsigned int BongoWindow::getY() { return mainWindow.getSize().y; }
+std::array<int, 2> BongoWindow::getPosition() {
+    const sf::Vector2i pos = mainWindow.getPosition();
+    return {pos.x, pos.y};
+}
+
+//============================================================================
+// SET WINDOW POSITION
+//============================================================================
+void BongoWindow::setX(int x) {
+    BongoWindow::setPosition(sf::Vector2i(x, BongoWindow::getY()));
+}
+void BongoWindow::setY(int y) {
+    mainWindow.setPosition(sf::Vector2i(BongoWindow::getX(), y));
+}
+void BongoWindow::setPosition(sf::Vector2i pos) {
+    mainWindow.setPosition(pos);
 }
 
 //============================================================================
@@ -90,22 +122,24 @@ int BongoWindow::processEvents() {
         // much... As trackpads have acceleration the faster you move you can
         // drag your mouse off the window.
         case sf::Event::MouseButtonPressed:
-            // if (event.mouseButton.button == sf::Mouse::Left && borderless) {
-            // grabbed_offset =
-            //     window.getPosition() - sf::Mouse::getPosition();
-            // grabbed_window = true;
-            //}
+            if (event.mouseButton.button == sf::Mouse::Left && borderless) {
+                auto [x, y] = BongoInput::Mouse::positionOnScreen();
+                grabbed_offset = mainWindow.getPosition() - sf::Vector2i(x, y);
+                grabbed_window = true;
+            }
             break;
 
         case sf::Event::MouseButtonReleased:
-            // if (event.mouseButton.button == sf::Mouse::Left && borderless)
-            //     grabbed_window = false;
+            if (event.mouseButton.button == sf::Mouse::Left && borderless)
+                grabbed_window = false;
             break;
 
         case sf::Event::MouseMoved:
-            // if (grabbed_window && borderless)
-            //     window.setPosition(sf::Mouse::getPosition() +
-            //     grabbed_offset);
+            if (grabbed_window && borderless) {
+                auto [x, y] = BongoInput::Mouse::positionOnScreen();
+                BongoWindow::setPosition(sf::Vector2i(x, y) + grabbed_offset);
+            }
+
             break;
 
         default:
@@ -197,15 +231,29 @@ void BongoWindow::bindToLua() {
         // create functions
         .addFunction(
             "create", luabridge::overload<>(&BongoWindow::create),
+            luabridge::overload<UInt32Ref>(&BongoWindow::create),
             luabridge::overload<UIntRef, UIntRef>(&BongoWindow::create),
             luabridge::overload<UIntRef, UIntRef, UInt32Ref>(
                 &BongoWindow::create),
             luabridge::overload<UIntRef, UIntRef, UInt32Ref, Vec2iRef>(
                 &BongoWindow::create))
         // get window size functions
-        .addFunction("get_width", &BongoWindow::getWidth)
-        .addFunction("get_height", &BongoWindow::getHeight)
-        .addFunction("get_size", &BongoWindow::getSize)
+        .addFunction("getWidth", &BongoWindow::getWidth)
+        .addFunction("getHeight", &BongoWindow::getHeight)
+        .addFunction("getSize", &BongoWindow::getSize)
+        // get window position functions
+        .addFunction("getX", &BongoWindow::getX)
+        .addFunction("getY", &BongoWindow::getY)
+        .addFunction("getPosition", &BongoWindow::getPosition)
+        // set window size functions
+        // IMPL: please implement these soon
+        //.addFunction("setWidth", &BongoWindow::setWidth)
+        //.addFunction("setHeight", &BongoWindow::setHeight)
+        //.addFunction("setSize", &BongoWindow::setSize) 
+        // set window position functions
+        .addFunction("setX", &BongoWindow::setX)
+        .addFunction("setY", &BongoWindow::setY)
+        .addFunction("setPosition", &BongoWindow::setPosition)
         // refresh functions
         .addFunction("refresh", luabridge::overload<>(&BongoWindow::refresh),
                      luabridge::overload<UIntRef, UIntRef, UInt32Ref>(

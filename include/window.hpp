@@ -20,6 +20,7 @@ namespace BongoWindow {
 // CREATE
 //============================================================================
 void create();
+void create(UInt32Ref style);
 void create(UIntRef width, UIntRef height);
 void create(UIntRef width, UIntRef height, UInt32Ref style);
 void create(UIntRef width, UIntRef height, UInt32Ref style, Vec2iRef position);
@@ -30,6 +31,20 @@ void create(UIntRef width, UIntRef height, UInt32Ref style, Vec2iRef position);
 unsigned int getWidth();
 unsigned int getHeight();
 std::array<unsigned int, 2> getSize();
+
+//============================================================================
+// GET WINDOW POSITION
+//============================================================================
+unsigned int getX();
+unsigned int getY();
+std::array<int, 2> getPosition();
+
+//============================================================================
+// SET WINDOW POSITION
+//============================================================================
+void setX(int);
+void setY(int);
+void setPosition(sf::Vector2i);
 
 //============================================================================
 // REFRESH
