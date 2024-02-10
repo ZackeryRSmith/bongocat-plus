@@ -3,12 +3,14 @@
 #include <sprite.hpp>
 #include <window.hpp>
 
+// TODO: I really need to go about making functions start returning sf::Vector2... stuff.
+//       Seriously, although returning an array is nice and all for lua binding it annoys
+//       me when trying to use those functions with SFML code which requires a sf::Vector2...
+
+// borderless window support
 sf::Vector2i grabbed_offset;
 bool grabbed_window = false;
 bool borderless = false;
-
-unsigned int rstate_shift_width = 0;
-unsigned int rstate_shift_height = 0;
 
 //============================================================================
 // CREATE
@@ -29,39 +31,39 @@ void BongoWindow::create(UIntRef width, UIntRef height) {
 void BongoWindow::create(UIntRef width, UIntRef height, UInt32Ref style) {
     if (style == sf::Style::None)
         borderless = true;
-    
-    mainWindow.create(sf::VideoMode(width, height), "BongoCat+", style);
+
+    main_window.create(sf::VideoMode(width, height), "BongoCat+", style);
     // check if the window being created is bigger then the screen
-    if (mainWindow.getSize().x < width || mainWindow.getSize().y < height)
+    if (BongoWindow::getX() < width || BongoWindow::getY() < height)
         std::cerr << "BongoCat+ [WARN]: Cannot spawn window of size (" << width
                   << ", " << height << "), window has been sized down to ("
-                  << mainWindow.getSize().x << ", " << mainWindow.getSize().y
+                  << BongoWindow::getX() << ", " << BongoWindow::getY()
                   << ")";
-    mainWindow.setFramerateLimit(MAX_FRAMERATE);
+    main_window.setFramerateLimit(MAX_FRAMERATE);
 }
 
 void BongoWindow::create(UIntRef width, UIntRef height, UInt32Ref style,
                          Vec2iRef position) {
     BongoWindow::create(width, height, style);
-    mainWindow.setPosition(position);
+    BongoWindow::setPosition(position);
 }
 
 //============================================================================
 // GET WINDOW SIZE
 //============================================================================
-unsigned int BongoWindow::getWidth() { return mainWindow.getSize().x; }
-unsigned int BongoWindow::getHeight() { return mainWindow.getSize().y; }
+unsigned int BongoWindow::getWidth() { return main_window.getSize().x; }
+unsigned int BongoWindow::getHeight() { return main_window.getSize().y; }
 std::array<unsigned int, 2> BongoWindow::getSize() {
-    return {mainWindow.getSize().x, mainWindow.getSize().y};
+    return {main_window.getSize().x, main_window.getSize().y};
 }
 
 //============================================================================
 // GET WINDOW POSITION
 //============================================================================
-unsigned int BongoWindow::getX() { return mainWindow.getSize().x; }
-unsigned int BongoWindow::getY() { return mainWindow.getSize().y; }
+unsigned int BongoWindow::getX() { return main_window.getSize().x; }
+unsigned int BongoWindow::getY() { return main_window.getSize().y; }
 std::array<int, 2> BongoWindow::getPosition() {
-    const sf::Vector2i pos = mainWindow.getPosition();
+    const sf::Vector2i pos = main_window.getPosition();
     return {pos.x, pos.y};
 }
 
@@ -72,17 +74,17 @@ void BongoWindow::setX(int x) {
     BongoWindow::setPosition(sf::Vector2i(x, BongoWindow::getY()));
 }
 void BongoWindow::setY(int y) {
-    mainWindow.setPosition(sf::Vector2i(BongoWindow::getX(), y));
+    BongoWindow::setPosition(sf::Vector2i(BongoWindow::getX(), y));
 }
 void BongoWindow::setPosition(sf::Vector2i pos) {
-    mainWindow.setPosition(pos);
+    main_window.setPosition(pos);
 }
 
 //============================================================================
 // REFRESH
 //============================================================================
 void BongoWindow::refresh() {
-    BongoWindow::create(mainWindow.getSize().x, mainWindow.getSize().y);
+    BongoWindow::create(main_window.getSize().x, main_window.getSize().y);
 }
 
 void BongoWindow::refresh(UIntRef width, UIntRef height, UInt32Ref style) {
@@ -99,7 +101,7 @@ void BongoWindow::refresh(UIntRef width, UIntRef height, UInt32Ref style,
 //============================================================================
 int BongoWindow::processEvents() {
     sf::Event event;
-    while (mainWindow.pollEvent(event)) {
+    while (main_window.pollEvent(event)) { // MAYBE: a good idea to allow lua to poll events
         switch (event.type) {
         case sf::Event::Closed:
             BongoWindow::close();
@@ -124,7 +126,7 @@ int BongoWindow::processEvents() {
         case sf::Event::MouseButtonPressed:
             if (event.mouseButton.button == sf::Mouse::Left && borderless) {
                 auto [x, y] = BongoInput::Mouse::positionOnScreen();
-                grabbed_offset = mainWindow.getPosition() - sf::Vector2i(x, y);
+                grabbed_offset = main_window.getPosition() - sf::Vector2i(x, y);
                 grabbed_window = true;
             }
             break;
@@ -153,13 +155,13 @@ int BongoWindow::processEvents() {
 //============================================================================
 // CLOSE
 //============================================================================
-void BongoWindow::close() { mainWindow.close(); }
+void BongoWindow::close() { main_window.close(); }
 
 //============================================================================
 // CLEAR
 //============================================================================
-void BongoWindow::clear() { mainWindow.clear(); }
-void BongoWindow::clear(const sf::Color &color) { mainWindow.clear(color); }
+void BongoWindow::clear() { main_window.clear(); }
+void BongoWindow::clear(const sf::Color &color) { main_window.clear(color); }
 
 //============================================================================
 // DRAW
@@ -168,23 +170,20 @@ void BongoWindow::clear(const sf::Color &color) { mainWindow.clear(color); }
 void BongoWindow::draw(const sf::Sprite &sprite) {
     const sf::FloatRect sprite_rect = sprite.getLocalBounds();
 
-    if (sprite_rect.height > rstate_shift_height)
-        rstate_shift_height = sprite_rect.height;
-
     sf::Transform transform = sf::Transform();
-    transform.translate(0, mainWindow.getSize().y - BASE_HEIGHT);
+    transform.translate(0, BongoWindow::getY() - BASE_HEIGHT);
     sf::RenderStates rstates = sf::RenderStates(transform);
 
-    mainWindow.draw(sprite, mainRenderStates);
+    main_window.draw(sprite, main_render_states);
 }
 
 void BongoWindow::draw(const sf::Drawable &drawable) {
-    mainWindow.draw(drawable, mainRenderStates);
+    main_window.draw(drawable, main_render_states);
 }
 
 void BongoWindow::draw(const sf::Vertex *vertices, size_t vertex_count,
                        sf::PrimitiveType type) {
-    mainWindow.draw(vertices, vertex_count, type, mainRenderStates);
+    main_window.draw(vertices, vertex_count, type, main_render_states);
 }
 
 //============================================================================
@@ -220,7 +219,7 @@ void BongoWindow::drawifelse(const sf::Drawable &true_drawable, bool condition,
 //============================================================================
 // DISPLAY
 //============================================================================
-void BongoWindow::display() { mainWindow.display(); }
+void BongoWindow::display() { main_window.display(); }
 
 //============================================================================
 // BIND TO LUA

@@ -8,8 +8,8 @@ extern int INPUT_KEY_TABLE[TOTAl_INPUT_TABLE_SIZE];
 // used in on_pressed & on_released
 extern std::map<int, bool> keyState;
 
-sf::Keyboard::Key ascii_to_key(int key_code);
-bool is_pressed_fallback(int key_code);
+sf::Keyboard::Key asciiToKey(int key_code);
+bool isPressedFallback(int key_code);
 
 namespace BongoInput {
 //============================================================================

@@ -48,8 +48,8 @@ using Vec2iRef = const sf::Vector2i &;
 #define BASE_HEIGHT 354
 
 // these symbols are defined in main.cpp
-extern sf::RenderWindow mainWindow;
-extern sf::RenderStates mainRenderStates;
+extern sf::RenderWindow main_window;
+extern sf::RenderStates main_render_states;
 extern lua_State *LuaState;
 
 #endif

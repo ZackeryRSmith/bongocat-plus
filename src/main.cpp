@@ -9,8 +9,8 @@
 #include <sprite.hpp>
 #include <window.hpp>
 
-sf::RenderWindow mainWindow;
-sf::RenderStates mainRenderStates; // may cause artifacts when switching cats
+sf::RenderWindow main_window;
+sf::RenderStates main_render_states; // may cause artifacts when switching cats
 lua_State *LuaState;
 
 #if defined(_WIN32)

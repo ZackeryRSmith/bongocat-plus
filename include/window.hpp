@@ -9,12 +9,6 @@
 extern sf::Vector2i grabbed_offset;
 extern bool grabbed_window;
 
-// stores how much to shift the render state
-extern unsigned int rstate_shift_width;
-extern unsigned int rstate_shift_height;
-
-extern float globalScale;
-
 namespace BongoWindow {
 //============================================================================
 // CREATE
