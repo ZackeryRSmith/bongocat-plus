@@ -91,7 +91,7 @@ ADD_EXECUTABLE(${PROJECT_NAME} ${SOURCES})
 FIND_PACKAGE(Lua 5.4 QUIET)
 IF(LUA_FOUND)
     INCLUDE_DIRECTORIES(${LUA_INCLUDE_DIR})
-    ADD_DEFINITIONS(-DLUA)
+    TARGET_LINK_LIBRARIES(${PROJECT_NAME} PRIVATE ${LUA_LIBRARIES})
     LOG(STATUS "Found LUA")
 ELSE()
     # download lua cmake
@@ -129,7 +129,7 @@ IF(WIN32)
     SET(SFML_BUILD_NETWORK FALSE)
 ELSE()
     # ----------------------------#
-    # FIND SFML (MacOSX & Linux) #
+    # FIND SFML (MacOSX & Linux)  #
     # ----------------------------#
     FIND_PACKAGE(
         SFML 2.5
