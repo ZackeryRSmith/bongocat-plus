@@ -22,8 +22,14 @@ INCLUDE(FetchContent)
 SET(FETCHCONTENT_BASE_DIR ${CMAKE_DEPS_DIR})
 
 # allow easy differentiation between OS'
-IF(UNIX AND NOT APPLE)
-    SET(LINUX TRUE)
+IF(UNIX)
+    SET(WHICH_UNIX "OTHER")
+    IF(APPLE)
+        SET(WHICH_UNIX "MACOS")
+    ELSE()
+        SET(WHICH_UNIX "LINUX")
+        SET(LINUX TRUE)
+    ENDIF()
 ENDIF()
 
 # ##############################################################################
@@ -81,6 +87,9 @@ INCLUDE_DIRECTORIES(
 
 # source files (anything under ./src/)
 FILE(GLOB_RECURSE SOURCES src/*.cpp)
+
+# include files (anything under ./include/)
+FILE(GLOB_RECURSE INCLUDES include/*.hpp)
 
 # define the executable target
 ADD_EXECUTABLE(${PROJECT_NAME} ${SOURCES})
@@ -155,15 +164,9 @@ IF(WIN32 AND BUILD_SHARED_LIBS)
 ENDIF()
 
 IF(UNIX)
-    EXECUTE_PROCESS(
-        COMMAND
-        ${CMAKE_COMMAND} -E echo_append
-        "\n${BoldWhite}___|${ColorReset} ${BoldBlue}*${ColorReset}NIX SPECIFIC'S ${BoldWhite}|___${ColorReset} : "
-    )
+    MESSAGE("\n${BoldWhite}___|${ColorReset} ${WHICH_UNIX} SPECIFICS ${BoldWhite}|___${ColorReset}")
 
     IF(LINUX)
-        MESSAGE("${BoldCyan}LINUX${ColorReset}")
-
         FIND_PACKAGE(X11 REQUIRED)
         INCLUDE_DIRECTORIES(${X11_INCLUDE_DIR})
         TARGET_LINK_LIBRARIES(${PROJECT_NAME} PRIVATE ${X11_LIBRARIES})
@@ -183,8 +186,6 @@ IF(UNIX)
     ENDIF()
 
     IF(APPLE)
-        MESSAGE("${BoldWhite}APPLE${ColorReset}")
-
         FIND_LIBRARY(COREGRAPHICS_LIB CoreGraphics)
         IF(COREGRAPHICS_LIB)
             TARGET_LINK_LIBRARIES(${PROJECT_NAME} PRIVATE ${COREGRAPHICS_LIB})
@@ -208,17 +209,41 @@ IF(UNIX)
     MESSAGE("${BoldWhite}-------------------------${ColorReset}\n")
 ENDIF()
 
-# Print some useful information about the build
+# ##############################################################################
+# FINALIZE                                                                     #
+# ##############################################################################
+IF(NOT NO_APP_DIR) # hide includes with -DNO_APP_DIR=true
 MESSAGE("${BoldRed}Application dir:${ColorReset} ${CMAKE_CURRENT_BINARY_DIR}")
+ENDIF()
+
+IF(NOT NO_INCLUDES) # hide includes with -DNO_INCLUDES=true
+MESSAGE("${BoldMagenta}Includes:${ColorReset}")
+FOREACH(include ${INCLUDES})
+    STRING(
+        REPLACE
+        "bongocat-plus"
+        "${BoldWhite}bongo${BoldMagenta}cat${ColorReset}-${BoldYellow}plus${ColorReset}"
+        string
+        ${include})
+    STRING(REPLACE "include" "${BoldBlue}include${ColorReset}" string ${string})
+    MESSAGE("  [${BoldCyan}*${ColorReset}] ${string}")
+ENDFOREACH()
+ENDIF()
+
+IF(NOT NO_SOURCES) # hide sources with -DNO_SOURCES=true
 MESSAGE("${BoldGreen}Sources:${ColorReset}")
 FOREACH(source ${SOURCES})
     STRING(
         REPLACE
         "bongocat-plus"
         "${BoldWhite}bongo${BoldMagenta}cat${ColorReset}-${BoldYellow}plus${ColorReset}"
-        modified_source
+        string
         ${source})
-    STRING(REPLACE "src" "${BoldGreen}src${ColorReset}" modified_source ${modified_source})
-    MESSAGE("  [${BoldCyan}*${ColorReset}] ${modified_source}")
+    STRING(REPLACE "src" "${BoldGreen}src${ColorReset}" string ${string})
+    MESSAGE("  [${BoldCyan}*${ColorReset}] ${string}")
 ENDFOREACH()
+ENDIF()
+
+IF(NOT NO_COMPILER) # hide compiler with -DNO_COMPILER=true
 MESSAGE("${BoldBlue}Compiler:${BoldWhite} ${CMAKE_CXX_COMPILER_ID} ${BoldYellow}${CMAKE_CXX_COMPILER_VERSION}${ColorReset}")
+ENDIF()
