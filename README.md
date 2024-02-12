@@ -41,58 +41,28 @@ that's fully complete. Please check out [in-dev](https://github.com/ZackeryRSmit
   
 </div>
 
-<!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li><a href="#about-the-project">About The Project</a></li>
-    <ul>
-      <li><a href="#building">Building</a></li>
-      <ul>
-          <li><a href="#windows">Windows</a></li>
-          <li><a href="#macosx">Windows</a></li>
-          <li><a href="#linux">Linux</a></li>
-      </ul>
-    </ul>
-    <li><a href="#contributors">Contributors</a></li>
-  </ol>
-</details>
-
+<!-- This section could be written a LOT better -->
 # About the Project
 A Bongo Cat overlay with ~~smooth paw movement~~ **(**[#27](https://github.com/ZackeryRSmith/bongocat-plus/issues/27)**)** and a highly customizable script, written in C++. *This project is an improved fork* as the original project has lost support from the developers (80+ unsolved issues). This project once aimed just to implement nearly all the feature requests. It has since broken off, becoming unrecognisable from the original. All the code from the original has been rewritten, but it's all thanks to the wonderful people who created Bongocat-Osu, that Bongocat-Plus exists!
 
-# Building
-## Windows
-To compile on Windows you **need** *(relevant links are provided, but if you have the tools installed already you'll be fine)*
-- [git](https://www.git-scm.com/downloads)
-- [cygwin](https://cygwin.com/install.html), [MinGW](https://sourceforge.net/projects/mingw/)
-  - Make
-  - g++
-- [CMake](https://cmake.org/download/)
+# Compiling
+To compile bongocat-plus you need to install some dependencies:
 
-```cmd
-git clone https://github.com/ZackeryRSmith/bongocat-plus
-cd bongocat-plus
-cmake .
-make
-```
+- **Git** *(this is an optional dependancy)*
+- **GCC**, **G++**, *any c/c++ compiler really*
+- **Make**
+- **CMake** >=3.10 *(may be lowered soon, see [#55](https://github.com/ZackeryRSmith/bongocat-plus/issues/55))*
+- **SFML** >=2.5 *(not required on Windows, see [#28](https://github.com/ZackeryRSmith/bongocat-plus/issues/28))*
+- **Lua** >=5.4 *(this is an optional dependancy, see [#51](https://github.com/ZackeryRSmith/bongocat-plus/issues/51))*
 
-Boom, you have just compiled bongocat-plus.
+*Now, that's out of the way*. We can now actually compile Bongocat-Plus
 
-## MacOSX
-To make life much easier for you I'd recommend you install [brew](https://brew.sh/); a package manager for MacOSX. Once installed run `brew install sfml`. Now run the following commands to build bongo-cat:
+1. First clone the repository, (assuming you have Git) thats as simple as `git clone https://github.com/ZackeryRSmith/bongocat-plus`
+2. Jump into the repo with a `cd bongocat-plus`
+3. Then to generate the make files run `cmake .`
+4. Top it off by running `make`
 
-```sh
-git clone https://github.com/ZackeryRSmith/bongocat-plus
-cd bongocat-plus
-cmake .
-make
-```
-
-Boom, you have just compiled bongocat-plus.
-
-## Linux
-As the linux build is currently failing this section won't be updated until [#48](https://github.com/ZackeryRSmith/bongocat-plus/issues/48) is fixed
+Boom, you have just compiled Bongocat-Plus! (if you experience any issues compiling bongocat-plus please make an [issue](https://github.com/ZackeryRSmith/bongocat-plus/issues))
 
 <br />
 
