@@ -43,7 +43,7 @@ that's fully complete. Please check out [in-dev](https://github.com/ZackeryRSmit
 
 <!-- This section could be written a LOT better -->
 # About the Project
-A Bongo Cat overlay with ~~smooth paw movement~~ **(**[#27](https://github.com/ZackeryRSmith/bongocat-plus/issues/27)**)** and a highly customizable script, written in C++. *This project is an improved fork* as the original project has lost support from the developers (80+ unsolved issues). This project once aimed just to implement nearly all the feature requests. It has since broken off, becoming unrecognisable from the original. All the code from the original has been rewritten, but it's all thanks to the wonderful people who created Bongocat-Osu, that Bongocat-Plus exists!
+An improved Bongo Cat overlay with ~~smooth paw movement~~ **(**[#27](https://github.com/ZackeryRSmith/bongocat-plus/issues/27)**)** and customizable lua scripting. Originally created due to the lack of support from developers in the original project (90+ unsolved issues), it now stands as a distinct iteration, thanks to a complete rewrite of the code. Bongocat-Plus owes its existence to the creators of Bongocat-Osu, so thank you!
 
 # Compiling
 To compile bongocat-plus you need to install some dependencies:
