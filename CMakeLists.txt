@@ -32,10 +32,10 @@ IF(UNIX)
     ENDIF()
 ENDIF()
 
-# ##############################################################################
+################################################################################
 # ANSI TEXT STYLING                                                            #
-# ##############################################################################
-IF(NOT WIN32 OR FORCE_ANSI STREQUAL True) # force ANSI regardless of OS with -DFORCE_ANSI=True
+################################################################################
+IF(NOT WIN32 OR FORCE_ANSI) # force ANSI regardless of OS with -DFORCE_ANSI=true
     STRING(ASCII 27 Esc)
     SET(ColorReset "${Esc}[m")
     SET(ColorBold "${Esc}[1m")
@@ -54,11 +54,11 @@ IF(NOT WIN32 OR FORCE_ANSI STREQUAL True) # force ANSI regardless of OS with -DF
     SET(BoldCyan "${Esc}[1;36m")
     SET(BoldWhite "${Esc}[1;37m")
 ENDIF()
-# ##############################################################################
+################################################################################
 
-# ##############################################################################
+################################################################################
 # CUSTOM LOGGING                                                               #
-# ##############################################################################
+################################################################################
 FUNCTION(LOG)
     LIST(GET ARGV 0 MessageType)
     IF(MessageType STREQUAL FATAL_ERROR OR MessageType STREQUAL SEND_ERROR)
@@ -77,7 +77,20 @@ FUNCTION(LOG)
         MESSAGE("${ARGV}")
     ENDIF()
 ENDFUNCTION()
-# ##############################################################################
+################################################################################
+
+# warn people of set variables
+IF(FORCE_ANSI)
+    LOG(NOTE "FORCE_ANSI is set\n")
+ELSEIF(NO_APP_DIR)
+    LOG(NOTE "NO_APP_DIR is set\n")
+ELSEIF(NO_INCLUDES)
+    LOG(NOTE "NO_INCLUDES is set\n")
+ELSEIF(NO_SOURCES)
+    LOG(NOTE "NO_SOURCES is set\n")
+ELSEIF(NO_COMPILER)
+    LOG(NOTE "NO_COMPILER is set\n")
+ENDIF()
 
 INCLUDE_DIRECTORIES(
     include # expose all headers
@@ -94,9 +107,9 @@ FILE(GLOB_RECURSE INCLUDES include/*.hpp)
 # define the executable target
 ADD_EXECUTABLE(${PROJECT_NAME} ${SOURCES})
 
-# ##############################################################################
+################################################################################
 # FIND OR INSTALL LUA & LUA BRIDGE 3 (for cat scripts)                         #
-# ##############################################################################
+################################################################################
 FIND_PACKAGE(Lua 5.4 QUIET)
 IF(LUA_FOUND)
     INCLUDE_DIRECTORIES(${LUA_INCLUDE_DIR})
@@ -122,9 +135,9 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(LuaBridge3)
 LOG(STATUS "Made LUA BRIDGE 3 available")
 
-# ------------------------#
+#-------------------------#
 # INSTALL SFML (windows)  #
-# ------------------------#
+#-------------------------#
 IF(WIN32)
     FetchContent_Declare(
         SFML
@@ -137,9 +150,9 @@ IF(WIN32)
     # don't build as it's unused
     SET(SFML_BUILD_NETWORK FALSE)
 ELSE()
-    # ----------------------------#
+    #-----------------------------#
     # FIND SFML (MacOSX & Linux)  #
-    # ----------------------------#
+    #-----------------------------#
     FIND_PACKAGE(
         SFML 2.5
         COMPONENTS graphics window system audio
@@ -150,10 +163,10 @@ ENDIF()
 # link SFML
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} PRIVATE sfml-graphics sfml-window sfml-system sfml-audio)
 
-# ---------------------------------------------------------------------#
+#----------------------------------------------------------------------#
 # Ensure that the runtime DLLs are copied to the same directory as the #
 # executable when building on Windows.  #------------------------------#
-# -------------------------------------/
+#--------------------------------------/
 IF(WIN32 AND BUILD_SHARED_LIBS)
     ADD_CUSTOM_COMMAND(
         TARGET ${PROJECT_NAME}
@@ -209,10 +222,10 @@ IF(UNIX)
     MESSAGE("${BoldWhite}-------------------------${ColorReset}\n")
 ENDIF()
 
-# ##############################################################################
+################################################################################
 # FINALIZE                                                                     #
-# ##############################################################################
-IF(NOT NO_APP_DIR) # hide includes with -DNO_APP_DIR=true
+################################################################################
+IF(NOT NO_APP_DIR) # hide app directory with -DNO_APP_DIR=true
 MESSAGE("${BoldRed}Application dir:${ColorReset} ${CMAKE_CURRENT_BINARY_DIR}")
 ENDIF()
 
