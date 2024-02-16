@@ -26,6 +26,9 @@ bool is_pressed_fallback(int key_code) {
     CFRelease(event);
     return (flags & kCGEventFlagMaskCommand) != 0;
 #elif defined(LINUX)
+    // ISSUE: this is a short term fix and this issue should be
+    // faught with at a later date
+    /*
     KeyCode keycode = XKeysymToKeycode(dpy, key_code);
     if (keycode != 0) {
         char keys[32];
@@ -34,6 +37,8 @@ bool is_pressed_fallback(int key_code) {
     } else {
         return false;
     }
+    */
+    return false;
 #endif
 }
 

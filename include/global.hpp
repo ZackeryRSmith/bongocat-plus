@@ -1,6 +1,15 @@
 #ifndef BONGO_CAT_GLOBAL_HPP
 #define BONGO_CAT_GLOBAL_HPP
 
+extern "C" {
+#include "lauxlib.h"
+#include "lua.h"
+#include "lualib.h"
+}
+
+// #include <LuaBridge/Array.h>
+#include <LuaBridge/LuaBridge.h>
+
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 
@@ -15,25 +24,18 @@
 #elif defined(unix) || defined(__unix__) || defined(__unix) ||                 \
     defined(__linux__)
 #define LINUX
-#include <X11/Xlib.h>
-#include <X11/extensions/Xrandr.h>
-#include <X11/keysym.h>
+// ISSUE: this is a short term fix and this issue should be
+// faught with at a later date
+// #include <X11/Xlib.h>
+// #include <X11/extensions/Xrandr.h>
+// #include <X11/keysym.h>
 
 extern "C" {
-#include <xdo.h>
+// #include <xdo.h>
 }
 #else
 #define UNKNOWN
 #endif
-
-extern "C" {
-#include "lauxlib.h"
-#include "lua.h"
-#include "lualib.h"
-}
-
-#include <LuaBridge/Array.h>
-#include <LuaBridge/LuaBridge.h>
 
 // used for std::clamp in input.cpp
 #include <algorithm>
