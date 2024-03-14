@@ -48,21 +48,21 @@ An improved Bongo Cat overlay with ~~smooth paw movement~~ **(**[#27](https://gi
 # Compiling
 To compile bongocat-plus you need to install some dependencies:
 
-- **Git** *(this is an optional dependancy)*
+- **Git** *(this is optional)*
 - **GCC**, **G++**, *any c/c++ compiler really*
 - **Make**
 - **CMake** >=3.10 *(may be lowered soon, see [#55](https://github.com/ZackeryRSmith/bongocat-plus/issues/55))*
 - **SFML** >=2.5 *(not required on Windows, see [#28](https://github.com/ZackeryRSmith/bongocat-plus/issues/28))*
-- **Lua** >=5.4 *(this is an optional dependancy, see [#51](https://github.com/ZackeryRSmith/bongocat-plus/issues/51))*
+- **Lua** >=5.4 *(will be downloaded automatically if not found, see [#51](https://github.com/ZackeryRSmith/bongocat-plus/issues/51))*
 
 *Now, that's out of the way*. We can now actually compile Bongocat-Plus
 
-1. First clone the repository, (assuming you have Git) thats as simple as `git clone https://github.com/ZackeryRSmith/bongocat-plus`
+1. First clone the repository — assuming you have Git — thats as simple as `git clone https://github.com/ZackeryRSmith/bongocat-plus`
 2. Jump into the repo with a `cd bongocat-plus`
 3. Then to generate the make files run `cmake .`
 4. Top it off by running `make`
 
-Boom, you have just compiled Bongocat-Plus! (if you experience any issues compiling bongocat-plus please make an [issue](https://github.com/ZackeryRSmith/bongocat-plus/issues))
+Boom, you have just compiled Bongocat-Plus! If you experience any issues compiling bongocat-plus please make an [issue](https://github.com/ZackeryRSmith/bongocat-plus/issues). Thanks!
 
 <br />
 
