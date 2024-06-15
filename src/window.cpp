@@ -32,7 +32,10 @@ void BongoWindow::create(UIntRef width, UIntRef height, UInt32Ref style) {
     if (style == sf::Style::None)
         borderless = true;
 
-    main_window.create(sf::VideoMode(width, height), "BongoCat+", style);
+    // allows the window to be streched
+    main_window.create(sf::VideoMode(max_sprite_width, max_sprite_height), "BongoCat+", style);
+    main_window.setSize(sf::Vector2u(width, height));
+
     // check if the window being created is bigger then the screen
     if (BongoWindow::getX() < width || BongoWindow::getY() < height)
         std::cerr << "BongoCat+ [WARN]: Cannot spawn window of size (" << width
